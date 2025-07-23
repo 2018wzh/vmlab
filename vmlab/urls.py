@@ -20,7 +20,7 @@ from apps.core.health import health_check
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/health/', health_check, name='health_check'),
+    path('health/', health_check, name='health_check'),
     path('api/', include([
         path('', include('apps.users.urls')),
         path('', include('apps.courses.urls')),

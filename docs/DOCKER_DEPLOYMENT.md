@@ -216,7 +216,7 @@ docker-compose exec -T db psql -U vmlab vmlab < backup.sql
 docker-compose ps
 
 # 检查应用健康端点
-curl http://localhost:8000/api/health/
+curl http://localhost:8000/health/
 ```
 
 ### 监控（生产环境）
