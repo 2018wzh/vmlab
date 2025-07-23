@@ -25,7 +25,7 @@ VMLab是一个基于Django和Libvirt的现代化虚拟机实验平台，专为�
 
 ### 🏗️ 技术架构亮点
 - **后端**: Django 5.2.4 + DRF + Libvirt Python API
-- **异步处理**: 基于线程池的异步虚拟机操作（替代Celery简化部署）
+- **异步处理**: 基于线程池的异步虚拟机操作
 - **虚拟化**: KVM/QEMU + Libvirt，支持完整的VM生命周期管理
 - **权限控制**: 基于角色的细粒度权限系统
 - **资源管理**: CPU、内存、磁盘配额控制和实时监控
@@ -33,10 +33,9 @@ VMLab是一个基于Django和Libvirt的现代化虚拟机实验平台，专为�
 ## 开发阶段规划
 
 ### 第一阶段：基础设施搭建 📋
-**预计时间**: 2-3周
 
 #### 1.1 项目环境初始化
-- [ ] **Django项目配置**
+- [x] **Django项目配置**
   - [x] 创建Django项目结构
   - [x] 配置settings.py（数据库、静态文件等）
   - [x] 配置URL路由
@@ -56,9 +55,9 @@ VMLab是一个基于Django和Libvirt的现代化虚拟机实验平台，专为�
   - [x] 创建基础模板结构
   - [ ] 配置响应式布局
 
-- [ ] **Docker容器化**
-  - [ ] 编写Dockerfile
-  - [ ] 创建docker-compose.yml
+- [x] **Docker容器化**
+  - [x] 编写Dockerfile
+  - [x] 创建docker-compose.yml
 
 ### 第二阶段：用户管理系统 👥
 #### 2.1 用户认证与授权

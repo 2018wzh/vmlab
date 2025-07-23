@@ -20,6 +20,7 @@ media/
 venv/
 env/
 ENV/
+.venv/
 
 # IDE
 .vscode/

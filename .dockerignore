@@ -1,0 +1,84 @@
+# Git相关
+.git
+.gitignore
+.gitattributes
+README.md
+
+# Python相关
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env
+pip-log.txt
+pip-delete-this-directory.txt
+.tox
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.pytest_cache
+
+# Node.js相关
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 开发环境
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# 数据库
+*.sqlite3
+*.db
+
+# 日志文件
+logs/
+*.log
+
+# 媒体文件
+media/
+
+# 静态文件
+staticfiles/
+static/
+
+# 测试覆盖率
+htmlcov/
+.coverage
+
+# 临时文件
+tmp/
+temp/
+
+# Docker相关
+.dockerignore
+Dockerfile*
+docker-compose*.yml
+
+# 密钥文件
+secrets/
+*.key
+*.pem

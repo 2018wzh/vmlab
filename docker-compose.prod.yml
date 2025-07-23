@@ -1,0 +1,139 @@
+version: '3.8'
+
+services:
+  # PostgreSQL数据库
+  db:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: vmlab
+      POSTGRES_USER: vmlab
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    secrets:
+      - db_password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vmlab -d vmlab"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - backend
+
+  # Redis
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --requirepass $(cat /run/secrets/redis_password)
+    volumes:
+      - redis_data:/data
+    secrets:
+      - redis_password
+    healthcheck:
+      test: ["CMD", "redis-cli", "--no-auth-warning", "-a", "$(cat /run/secrets/redis_password)", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - backend
+
+  # Django后端
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    restart: unless-stopped
+    environment:
+      - DEBUG=0
+      - SECRET_KEY_FILE=/run/secrets/secret_key
+      - DATABASE_URL=postgresql://vmlab:$(cat /run/secrets/db_password)@db:5432/vmlab
+      - REDIS_URL=redis://:$(cat /run/secrets/redis_password)@redis:6379/0
+      - ALLOWED_HOSTS=your-domain.com,www.your-domain.com
+      - CORS_ALLOWED_ORIGINS=https://your-domain.com,https://www.your-domain.com
+    volumes:
+      - ./logs:/app/logs
+      - ./media:/app/media
+      - /var/run/libvirt/libvirt-sock:/var/run/libvirt/libvirt-sock
+      - /var/lib/libvirt/images:/var/lib/libvirt/images
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    secrets:
+      - secret_key
+      - db_password
+      - redis_password
+    privileged: true
+    networks:
+      - backend
+      - frontend
+
+  # Nginx反向代理
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./docker/ssl:/etc/nginx/ssl  # SSL证书
+    depends_on:
+      - backend
+    networks:
+      - frontend
+
+  # 监控 - Prometheus (可选)
+  prometheus:
+    image: prom/prometheus:latest
+    restart: unless-stopped
+    volumes:
+      - ./docker/prometheus:/etc/prometheus
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+    networks:
+      - backend
+
+  # 监控 - Grafana (可选)
+  grafana:
+    image: grafana/grafana:latest
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD_FILE=/run/secrets/grafana_password
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./docker/grafana:/etc/grafana/provisioning
+    secrets:
+      - grafana_password
+    networks:
+      - backend
+
+secrets:
+  secret_key:
+    file: ./secrets/secret_key.txt
+  db_password:
+    file: ./secrets/db_password.txt
+  redis_password:
+    file: ./secrets/redis_password.txt
+  grafana_password:
+    file: ./secrets/grafana_password.txt
+
+volumes:
+  postgres_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge

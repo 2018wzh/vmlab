@@ -5,3 +5,9 @@ PyYAML
 djangorestframework-simplejwt
 pytest
 pytest-django
+dj-database-url
+django-redis
+psycopg2-binary
+gunicorn
+whitenoise
+django-cors-headers
