@@ -177,23 +177,6 @@ VMLab虚拟化实验平台API设计遵循RESTful风格，提供完整的虚拟�
 | GET | `/vms/{id}/console/ssh/` | 获取SSH控制台访问信息 |
 | POST | `/vms/{id}/console/vnc/token/` | 生成VNC访问令牌 |
 | POST | `/vms/{id}/console/ssh/token/` | 生成SSH访问令牌 |
-## 5. 任务队列模块
-
-### 5.1 任务管理
-| 方法 | 路径 | 描述 |
-|------|------|------|
-| GET | `/tasks/` | 获取任务列表 |
-| GET | `/tasks/{id}/` | 获取任务详情 |
-| POST | `/tasks/{id}/cancel/` | 取消任务 |
-| POST | `/tasks/{id}/retry/` | 重试任务 |
-
-### 5.2 任务监控
-| 方法 | 路径 | 描述 |
-|------|------|------|
-| GET | `/tasks/status/` | 获取任务队列状态 |
-| GET | `/tasks/workers/` | 获取工作进程状态 |
-| GET | `/tasks/statistics/` | 获取任务统计信息 |
-
 ## 6. 文件管理模块
 
 ### 6.1 文件上传
