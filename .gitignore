@@ -31,5 +31,8 @@ ENV/
 .DS_Store
 Thumbs.db
 
-# Migration files (optional - uncomment if you don't want to track them)
+# Migration files
 **/migrations/*.py
+
+# Logs
+*.log
