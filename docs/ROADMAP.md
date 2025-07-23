@@ -12,7 +12,7 @@ VMLab是一个基于Django和Libvirt的现代化虚拟机实验平台，专为�
 - [ ] **Django项目配置**
   - [x] 创建Django项目结构
   - [x] 配置settings.py（数据库、静态文件等）
-  - [ ] 配置URL路由
+  - [x] 配置URL路由
   - [ ] 设置日志系统
   - [ ] 配置开发和生产环境
 
