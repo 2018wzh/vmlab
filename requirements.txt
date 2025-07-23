@@ -4,3 +4,4 @@ celery
 redis
 libvirt-python
 PyYAML
+djangorestframework-simplejwt
