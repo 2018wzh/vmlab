@@ -93,20 +93,3 @@
 | `vnc_password` | `CharField` | VNC密码 | |
 | `created_at` | `DateTimeField` | 创建时间 | |
 | `updated_at` | `DateTimeField` | 更新时间 | |
-
-## 4. 任务队列模块 (Task Queue Module)
-
-### 4.1 `Task` (任务模型)
-用于跟踪Celery异步任务的状态。
-
-| 字段名 | 类型 | 描述 | 备注 |
-|---|---|---|---|
-| `id` | `AutoField` | 主键 | |
-| `task_id` | `CharField` | Celery任务ID | |
-| `name` | `CharField` | 任务名称 | 例如: "create_vm", "start_vm" |
-| `user` | `ForeignKey` | 关联到`User`模型 | 任务发起者 |
-| `status` | `CharField` | 任务状态 | "PENDING", "SUCCESS", "FAILURE" |
-| `result` | `JSONField` | 任务结果 | |
-| `created_at` | `DateTimeField` | 创建时间 | |
-| `completed_at` | `DateTimeField` | 完成时间 | |
-
