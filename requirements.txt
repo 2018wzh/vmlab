@@ -1,0 +1,6 @@
+Django==5.2.4
+djangorestframework
+celery
+redis
+libvirt-python
+PyYAML

@@ -94,16 +94,6 @@
 | `created_at` | `DateTimeField` | 创建时间 | |
 | `updated_at` | `DateTimeField` | 更新时间 | |
 
-### 3.2 `VMSnapshot` (虚拟机快照模型)
-
-| 字段名 | 类型 | 描述 | 备注 |
-|---|---|---|---|
-| `id` | `AutoField` | 主键 | |
-| `vm` | `ForeignKey` | 关联到`VirtualMachine` | |
-| `name` | `CharField` | 快照名称 | |
-| `description` | `TextField` | 快照描述 | |
-| `created_at` | `DateTimeField` | 创建时间 | |
-
 ## 4. 任务队列模块 (Task Queue Module)
 
 ### 4.1 `Task` (任务模型)
@@ -120,47 +110,3 @@
 | `created_at` | `DateTimeField` | 创建时间 | |
 | `completed_at` | `DateTimeField` | 完成时间 | |
 
-## 5. 系统与日志模块 (System & Log Module)
-
-### 5.1 `SystemLog` (系统日志模型)
-
-| 字段名 | 类型 | 描述 | 备注 |
-|---|---|---|---|
-| `id` | `AutoField` | 主键 | |
-| `level` | `CharField` | 日志级别 | "INFO", "WARNING", "ERROR" |
-| `message` | `TextField` | 日志内容 | |
-| `timestamp` | `DateTimeField` | 时间戳 | |
-
-### 5.2 `AuditLog` (审计日志模型)
-
-| 字段名 | 类型 | 描述 | 备注 |
-|---|---|---|---|
-| `id` | `AutoField` | 主键 | |
-| `user` | `ForeignKey` | 关联到`User`模型 | 操作用户 |
-| `action` | `CharField` | 操作类型 | 例如: "vm.create", "user.login" |
-| `details` | `JSONField` | 操作详情 | |
-| `ip_address` | `GenericIPAddressField` | 操作者IP | |
-| `timestamp` | `DateTimeField` | 时间戳 | |
-
-## 关系图 (E-R Diagram)
-
-```mermaid
-erDiagram
-    USER ||--o{ QUOTA : "has"
-    USER ||--|{ ROLE : "is"
-    USER ||--o{ COURSE : "teaches"
-    USER ||--o{ COURSE : "studies"
-    USER ||--o{ VIRTUALMACHINE : "owns"
-    USER ||--o{ VIRTUALMACHINETEMPLATE : "uploads"
-    USER ||--o{ TASK : "initiates"
-    USER ||--o{ AUDITLOG : "performs"
-
-    COURSE ||--o{ VIRTUALMACHINETEMPLATE : "has"
-    COURSE ||--o{ VIRTUALMACHINE : "contains"
-
-    VIRTUALMACHINETEMPLATE ||--o{ VIRTUALMACHINE : "is_base_for"
-
-    VIRTUALMACHINE ||--o{ VMSNAPSHOT : "has"
-```
-
----

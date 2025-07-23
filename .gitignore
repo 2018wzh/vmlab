@@ -32,4 +32,4 @@ ENV/
 Thumbs.db
 
 # Migration files (optional - uncomment if you don't want to track them)
-*/migrations/*.py
+**/migrations/*.py

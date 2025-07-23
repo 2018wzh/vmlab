@@ -6,7 +6,7 @@ VMLab虚拟化实验平台API设计遵循RESTful风格，提供完整的虚拟�
 
 ## 基础信息
 
-- **Base URL**: `/api/v1/`
+- **Base URL**: `/api/`
 - **认证方式**: JWT Token / Session Authentication
 - **内容类型**: `application/json`
 - **字符编码**: `UTF-8`
@@ -215,7 +215,7 @@ VMLab虚拟化实验平台API设计遵循RESTful风格，提供完整的虚拟�
 
 ### 创建虚拟机
 ```bash
-curl -X POST "http://localhost:8000/api/v1/vms/" \
+curl -X POST "http://localhost:8000/api/vms/" \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -d '{
@@ -230,13 +230,13 @@ curl -X POST "http://localhost:8000/api/v1/vms/" \
 
 ### 启动虚拟机
 ```bash
-curl -X POST "http://localhost:8000/api/v1/vms/1/start/" \
+curl -X POST "http://localhost:8000/api/vms/1/start/" \
   -H "Authorization: Bearer <token>"
 ```
 
 ### 获取虚拟机监控数据
 ```bash
-curl -X GET "http://localhost:8000/api/v1/vms/1/metrics/?start_time=2025-07-23T00:00:00Z&end_time=2025-07-23T23:59:59Z" \
+curl -X GET "http://localhost:8000/api/vms/1/metrics/?start_time=2025-07-23T00:00:00Z&end_time=2025-07-23T23:59:59Z" \
   -H "Authorization: Bearer <token>"
 ```
 

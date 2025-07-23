@@ -4,7 +4,7 @@
 
 ![VMLab Logo](https://img.shields.io/badge/VMLab-虚拟化实验平台-blue?style=for-the-badge)
 
-[![Django](https://img.shields.io/badge/Django-4.2.7-green.svg)](https://www.djangoproject.com/)
+[![Django](https://img.shields.io/badge/Django-5.2.4-green.svg)](https://www.djangoproject.com/)
 [![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/)
 [![Libvirt](https://img.shields.io/badge/Libvirt-KVM/QEMU-red.svg)](https://libvirt.org/)
 [![Material Design](https://img.shields.io/badge/UI-Material_Design-purple.svg)](https://material.io/)
