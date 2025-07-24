@@ -1,0 +1,43 @@
+{% extends 'frontend/base.html' %}
+{% block title %}教师仪表盘{% endblock %}
+{% block content %}
+<h2 class="mb-4">教师仪表盘</h2>
+
+<section class="mb-5">
+  <h4>我教授的课程</h4>
+  <div class="row">
+    {% for course in courses %}
+      <div class="col-md-4 mb-3">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{ course.name }}</h5>
+            <p class="card-text">{{ course.description|truncatechars:100 }}</p>
+            <a href="{% url 'frontend:course_detail' course.id %}" class="btn btn-primary btn-sm">查看课程</a>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <p>您没有教授任何课程。</p>
+    {% endfor %}
+  </div>
+</section>
+
+<section>
+  <h4>相关虚拟机</h4>
+  <div class="row">
+    {% for vm in vms %}
+      <div class="col-md-4 mb-3">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{ vm.name }}</h5>
+            <p class="card-text">状态: {{ vm.status }}</p>
+            <a href="{% url 'frontend:vm_detail' vm.id %}" class="btn btn-primary btn-sm">查看虚拟机</a>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <p>暂无相关虚拟机。</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

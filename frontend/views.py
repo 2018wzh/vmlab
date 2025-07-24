@@ -49,9 +49,27 @@ def register(request):
 
 @login_required
 def dashboard(request):
-    courses = Course.objects.filter(students=request.user)
-    vms = VirtualMachine.objects.filter(owner=request.user)
-    return render(request, 'frontend/dashboard.html', {'courses': courses, 'vms': vms})
+    """根据用户角色渲染不同的 Dashboard 页面"""
+    user = request.user
+    role_name = getattr(getattr(user, 'role', None), 'name', None)
+    # 教师
+    if role_name == 'teacher':
+        courses = Course.objects.filter(teachers=user)
+        vms = VirtualMachine.objects.filter(
+            Q(owner=user) | Q(course__teachers=user)
+        ).distinct().order_by('-created_at')
+        template_name = 'frontend/dashboard_teacher.html'
+    # 管理员
+    elif user.is_staff or role_name == 'admin':
+        courses = Course.objects.all()
+        vms = VirtualMachine.objects.all().order_by('-created_at')
+        template_name = 'frontend/dashboard_admin.html'
+    # 学生及其他
+    else:
+        courses = Course.objects.filter(students=user)
+        vms = VirtualMachine.objects.filter(owner=user).order_by('-created_at')
+        template_name = 'frontend/dashboard_student.html'
+    return render(request, template_name, {'courses': courses, 'vms': vms})
 
 @login_required
 def course_create(request):
@@ -173,7 +191,7 @@ def vm_convert(request, vm_id):
             template.save()
             return redirect('frontend:template_detail', template_id=template.id)
     else:
-        initial = {'name': vm.name, 'course': vm.course.id}
+        initial = {'name': vm.name, 'course': vm.course.pk if vm.course else None}
         form = VMConvertForm(initial=initial)
     return render(request, 'frontend/vm_convert.html', {'form': form, 'vm': vm})
 
