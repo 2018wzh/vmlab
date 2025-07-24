@@ -57,6 +57,7 @@ class VirtualMachineService:
             vm.uuid = vm_uuid
             vm.mac_address = vm_info['mac_address']
             vm.vnc_port = vm_info['vnc_port']
+            vm.vnc_password = vm_info['vnc_password']
             vm.status = 'stopped'
             vm.save()
             
