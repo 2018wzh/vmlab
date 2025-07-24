@@ -6,7 +6,7 @@
   <tr><th>用户名</th><td>{{ user.username }}</td></tr>
   <tr><th>姓名</th><td>{{ user.get_full_name }}</td></tr>
   <tr><th>邮箱</th><td>{{ user.email }}</td></tr>
-  <tr><th>角色</th><td>{{ user.role.name }}</td></tr>
+  <tr><th>角色</th><td>{{ user.role }}</td></tr>
   <tr><th>账户激活</th><td>{{ user.is_active|yesno:"是,否" }}</td></tr>
 </table>
 <a href="{% url 'frontend:user_update' user.pk %}" class="btn btn-primary">编辑信息</a>

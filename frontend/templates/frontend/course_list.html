@@ -23,7 +23,9 @@
         <td>
           <a href="{% url 'frontend:course_detail' course.id %}" class="btn btn-sm btn-info">管理</a>
           <a href="{% url 'frontend:course_update' course.id %}" class="btn btn-sm btn-secondary">编辑</a>
-          <a href="{% url 'frontend:course_delete' course.id %}" class="btn btn-sm btn-danger">删除</a>
+          <a href="{% url 'frontend:course_delete' course.id %}" class="btn btn-sm btn-danger"
+             onclick="return confirm('确定要删除课程 {{ course.name }} 吗？');"
+          >删除</a>
         </td>
       </tr>
     {% empty %}

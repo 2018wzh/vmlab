@@ -5,19 +5,17 @@
   <td>{{ vm.status }}</td>
   <td>{{ vm.ip_address }}</td>
   <td>
-    <button class="btn btn-sm btn-success" 
-      hx-post="/api/vms/{{ vm.id }}/start/" 
-      hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-      hx-swap="none"
-      hx-trigger="click">Start</button>
-    <button class="btn btn-sm btn-warning" 
-      hx-post="/api/vms/{{ vm.id }}/stop/" 
-      hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-      hx-swap="none"
-      hx-trigger="click">Stop</button>
-    <a href="/vms/{{ vm.id }}/" class="btn btn-sm btn-info">Console</a>
+    <button class="btn btn-sm btn-success" hx-post="/api/vms/{{ vm.id }}/start/"
+      hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-swap="none" hx-trigger="click">启动</button>
+    <button class="btn btn-sm btn-warning" hx-post="/api/vms/{{ vm.id }}/stop/"
+      hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-swap="none" hx-trigger="click">停止</button>
+    <a href="{% url 'frontend:vm_delete' vm.id %}" class="btn btn-sm btn-danger"
+      onclick="return confirm('确定要删除虚拟机 {{ vm.name }} 吗？');">删除</a>
+    <a href="/vms/{{ vm.id }}/" class="btn btn-sm btn-info">详情</a>
   </td>
 </tr>
 {% empty %}
-<tr><td colspan="5">No virtual machines found.</td></tr>
+<tr>
+  <td colspan="5">No virtual machines found.</td>
+</tr>
 {% endfor %}

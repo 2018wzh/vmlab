@@ -16,7 +16,9 @@
         <td>{{ user.email }}</td>
         <td>
           <a href="{% url 'frontend:user_update' user.pk %}" class="btn btn-sm btn-secondary">编辑</a>
-          <a href="{% url 'frontend:user_delete' user.pk %}" class="btn btn-sm btn-danger">删除</a>
+          <a href="{% url 'frontend:user_delete' user.pk %}" class="btn btn-sm btn-danger"
+             onclick="return confirm('确定要删除用户 {{ user.username }} 吗？');"
+          >删除</a>
         </td>
       </tr>
     {% empty %}

@@ -13,11 +13,9 @@
       <th>Actions</th>
     </tr>
   </thead>
-<tbody id="vm-list-body"
-       hx-get="{% url 'frontend:vm_list_partial' %}"
-       hx-trigger="load, every 10s"
-       hx-swap="innerHTML">
-  {% include 'frontend/partials/vm_list_rows.html' %}
-</tbody>
+  <tbody id="vm-list-body" hx-get="{% url 'frontend:vm_list_partial' %}" hx-trigger="load, every 10s"
+    hx-swap="innerHTML">
+    {% include 'frontend/partials/vm_list_rows.html' %}
+  </tbody>
 </table>
 {% endblock %}
