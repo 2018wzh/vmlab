@@ -272,7 +272,7 @@ def template_create(request):
             template.owner = request.user
             # 保存上传文件
             file = request.FILES.get('file')
-            fs = FileSystemStorage(location=settings.MEDIA_ROOT + '/templates')
+            fs = FileSystemStorage(location=str(settings.MEDIA_ROOT) + '/templates')
             filename = fs.save(file.name, file)
             template.file_path = fs.path(filename)
             template.save()
