@@ -12,6 +12,10 @@
     <a href="{% url 'frontend:vm_delete' vm.id %}" class="btn btn-sm btn-danger"
       onclick="return confirm('确定要删除虚拟机 {{ vm.name }} 吗？');">删除</a>
     <a href="/vms/{{ vm.id }}/" class="btn btn-sm btn-info">详情</a>
+    {% comment %} 仅课程教师或管理员可见转换按钮 {% endcomment %}
+    {% if request.user.is_staff %}
+    <a href="{% url 'frontend:vm_convert' vm.id %}" class="btn btn-sm btn-warning">转换为模板</a>
+    {% endif %}
   </td>
 </tr>
 {% empty %}

@@ -6,18 +6,18 @@
   {% csrf_token %}
   <div class="mb-3">
     <label for="id_name" class="form-label">模板名称</label>
-    {{ form.name|add_class:"form-control" }}
+    {{ form.name }}
   </div>
   <div class="mb-3">
     <label for="id_description" class="form-label">描述</label>
-    {{ form.description|add_class:"form-control" }}
+    {{ form.description }}
   </div>
   <div class="mb-3">
     <label for="id_course" class="form-label">课程</label>
-    {{ form.course|add_class:"form-select" }}
+    {{ form.course }}
   </div>
   <div class="mb-3 form-check">
-    {{ form.is_public|add_class:"form-check-input" }}
+    {{ form.is_public }}
     <label for="id_is_public" class="form-check-label">公开模板</label>
   </div>
   <button type="submit" class="btn btn-primary">转换</button>

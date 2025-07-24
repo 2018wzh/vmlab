@@ -173,7 +173,7 @@ def vm_detail(request, vm_id):
 def vm_convert(request, vm_id):
     vm = get_object_or_404(VirtualMachine, id=vm_id)
     # 仅课程教师可转换
-    if not vm.course or request.user not in vm.course.teachers.all():
+    if not vm.course or (not request.user.is_staff and request.user not in vm.course.teachers.all()):
         return redirect('frontend:vm_detail', vm_id=vm_id)
     if request.method == 'POST':
         form = VMConvertForm(request.POST)
