@@ -1,0 +1,12 @@
+{% extends 'frontend/base.html' %}
+{% block title %}虚拟机详情 - {{ vm.name }}{% endblock %}
+{% block content %}
+<h2>{{ vm.name }}</h2>
+<p>状态: {{ vm.status }}</p>
+<p>CPU: {{ vm.cpu_cores }} cores</p>
+<p>内存: {{ vm.memory_mb }} MB</p>
+<p>磁盘: {{ vm.disk_gb }} GB</p>
+<p>IP: {{ vm.ip_address }}</p>
+<p>VNC端口: {{ vm.vnc_port }}</p>
+<a href="{% url 'frontend:vm_list' %}" class="btn btn-secondary mt-3">返回虚拟机列表</a>
+{% endblock %}

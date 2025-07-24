@@ -1,0 +1,25 @@
+{% extends 'frontend/base.html' %}
+{% block title %}课程详情 - {{ course.name }}{% endblock %}
+{% block content %}
+<h2>{{ course.name }}</h2>
+<p>{{ course.description }}</p>
+<hr>
+<h4>教师</h4>
+<ul>
+  {% for teacher in teachers %}
+    <li>{{ teacher.username }}</li>
+  {% empty %}
+    <li>暂无教师</li>
+  {% endfor %}
+</ul>
+<hr>
+<h4>学生</h4>
+<ul>
+  {% for student in students %}
+    <li>{{ student.username }}</li>
+  {% empty %}
+    <li>暂无学生</li>
+  {% endfor %}
+</ul>
+<a href="{% url 'frontend:course_list' %}" class="btn btn-secondary mt-3">返回课程列表</a>
+{% endblock %}

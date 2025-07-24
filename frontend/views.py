@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import CustomUserCreationForm
@@ -51,6 +51,22 @@ def course_list(request):
     return render(request, 'frontend/course_list.html', {'courses': courses})
 
 @login_required
+def course_detail(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+    students = course.students.all()
+    teachers = course.teachers.all()
+    return render(request, 'frontend/course_detail.html', {
+        'course': course,
+        'students': students,
+        'teachers': teachers,
+    })
+
+@login_required
 def vm_list(request):
     vms = VirtualMachine.objects.filter(owner=request.user)
     return render(request, 'frontend/vm_list.html', {'vms': vms})
+
+@login_required
+def vm_detail(request, vm_id):
+    vm = get_object_or_404(VirtualMachine, id=vm_id)
+    return render(request, 'frontend/vm_detail.html', {'vm': vm})
