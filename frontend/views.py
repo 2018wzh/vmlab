@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm
+from .forms import CustomUserCreationForm
 from django.contrib.auth.decorators import login_required
 from apps.courses.models import Course
 from apps.vms.models import VirtualMachine
@@ -28,13 +29,14 @@ def user_logout(request):
 
 
 def register(request):
+    """User registration using custom user creation form."""
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('frontend:login')
     else:
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
     return render(request, 'frontend/register.html', {'form': form})
 
 @login_required

@@ -1,0 +1,33 @@
+{% extends 'frontend/base.html' %}
+{% block title %}Virtual Machines - VMLab{% endblock %}
+{% block content %}
+<h2 class="mb-4">My Virtual Machines</h2>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Name</th>
+      <th>Status</th>
+      <th>IP Address</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for vm in vms %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ vm.name }}</td>
+        <td>{{ vm.status }}</td>
+        <td>{{ vm.ip_address }}</td>
+        <td>
+          <a href="#" class="btn btn-sm btn-success">Start</a>
+          <a href="#" class="btn btn-sm btn-warning">Stop</a>
+          <a href="#" class="btn btn-sm btn-info">Console</a>
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="5">No virtual machines found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

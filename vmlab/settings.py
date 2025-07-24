@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     'apps.vms',
     # Frontend app
     'frontend',
+    # Widget Tweaks for form rendering
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
@@ -152,6 +154,10 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
 }
+
+# Custom authentication redirects
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/dashboard/'
 
 # Logging Configuration
 LOGGING = {

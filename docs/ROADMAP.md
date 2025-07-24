@@ -131,19 +131,19 @@ VMLab是一个基于Django和Libvirt的现代化虚拟机实验平台，专为�
 
 ### 第五阶段：Django 前端开发 🎨
 - [ ] 环境与项目初始化
-  - [ ] 创建 Django 前端应用 `frontend`
-  - [ ] 配置 INSTALLED_APPS、模板目录和静态文件路径
-  - [ ] 集成 Bootstrap 5（通过 npm 或 CDN）
+  - [x] 创建 Django 前端应用 `frontend`
+  - [x] 配置 INSTALLED_APPS、模板目录和静态文件路径
+  - [x] 集成 Bootstrap 5（通过 npm 或 CDN）
   - [ ] 配置静态文件收集和压缩
 
 - [ ] 基础模板与布局组件
-  - [ ] 设计 `base.html`，包含顶部导航和侧边栏
-  - [ ] 实现模板继承，提取公共布局
+  - [x] 设计 `base.html`，包含顶部导航和侧边栏
+  - [x] 实现模板继承，提取公共布局
   - [ ] 创建导航栏、侧边栏、页脚等 include 模板
 
 - [ ] 页面视图开发
-  - [ ] 登录/注册页面（使用 Django Auth）
-  - [ ] 仪表盘视图，展示虚拟机监控数据和统计卡片
+  - [x] 登录/注册页面（使用 Django Auth）
+  - [x] 仪表盘视图，展示虚拟机监控数据和统计卡片
   - [ ] 课程列表/详情视图（ListView、DetailView）
   - [ ] 虚拟机列表/详情视图
 
@@ -159,12 +159,12 @@ VMLab是一个基于Django和Libvirt的现代化虚拟机实验平台，专为�
   - [ ] 实现虚拟机状态实时更新（轮询或 WebSocket）
 
 - [ ] 测试和优化
-  - [ ] 为视图和模板编写单元测试
+  - [x] 为视图和模板编写单元测试
   - [ ] 使用 Selenium 或 Cypress 进行端到端测试
   - [ ] 静态文件压缩及 CDN 集成
 
 - [ ] 部署准备
-  - [ ] 配置 Nginx + Gunicorn/Daphne 部署
+  - [ ] 配置 Nginx + Gunicorn 部署
   - [ ] 设置 SSL 证书和域名
   - [ ] 优化缓存策略和安全配置
 

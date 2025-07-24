@@ -1,0 +1,43 @@
+{% extends 'frontend/base.html' %}
+{% block title %}Dashboard - VMLab{% endblock %}
+{% block content %}
+<h2 class="mb-4">Dashboard</h2>
+
+<section class="mb-5">
+  <h4>My Courses</h4>
+  <div class="row">
+    {% for course in courses %}
+      <div class="col-md-4 mb-3">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{ course.name }}</h5>
+            <p class="card-text">{{ course.description|truncatechars:100 }}</p>
+            <a href="{% url 'frontend:course_list' %}" class="btn btn-primary btn-sm">View Courses</a>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <p>No courses available.</p>
+    {% endfor %}
+  </div>
+</section>
+
+<section>
+  <h4>My Virtual Machines</h4>
+  <div class="row">
+    {% for vm in vms %}
+      <div class="col-md-4 mb-3">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{ vm.name }}</h5>
+            <p class="card-text">Status: {{ vm.status }}</p>
+            <a href="{% url 'frontend:vm_list' %}" class="btn btn-primary btn-sm">View VMs</a>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <p>No virtual machines.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
