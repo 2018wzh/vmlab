@@ -25,4 +25,6 @@ urlpatterns = [
     path('users/create/', views.user_create, name='user_create'),
     path('users/<uuid:user_id>/edit/', views.user_update, name='user_update'),
     path('users/<uuid:user_id>/delete/', views.user_delete, name='user_delete'),
+    # 用户个人信息
+    path('profile/', views.user_profile, name='user_profile'),
 ]

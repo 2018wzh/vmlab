@@ -176,6 +176,11 @@ def user_delete(request, user_id):
     return redirect('frontend:user_list')
 
 @login_required
+def user_profile(request):
+    """展示当前用户个人信息"""
+    return render(request, 'frontend/user_profile.html', {'user': request.user})
+
+@login_required
 def vm_detail(request, vm_id):
     vm = get_object_or_404(VirtualMachine, id=vm_id)
     return render(request, 'frontend/vm_detail.html', {'vm': vm})

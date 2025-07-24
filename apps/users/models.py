@@ -23,7 +23,7 @@ class User(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, verbose_name="用户ID")
     role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="角色")
     
-    class Meta(AbstractUser.Meta):
+    class Meta:
         verbose_name = "用户"
         verbose_name_plural = verbose_name
 
