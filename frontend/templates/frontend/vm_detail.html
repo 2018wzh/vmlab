@@ -8,5 +8,38 @@
 <p>磁盘: {{ vm.disk_gb }} GB</p>
 <p>IP: {{ vm.ip_address }}</p>
 <p>VNC端口: {{ vm.vnc_port }}</p>
+
+{% if vm.status == 'running' %}
+<div class="mt-4">
+  <h3>VNC 控制台</h3>
+  <div id="vnc_container" style="width:800px; height:600px; border:1px solid #000;"></div>
+  <!-- 引入 noVNC 客户端库 -->
+  <script src="https://cdn.jsdelivr.net/npm/novnc-core@1.3.0/core/rfb.js"></script>
+  <script>
+    (function() {
+      // 获取 VNC 访问信息
+      fetch('/api/vms/{{ vm.id }}/console_vnc/')  
+        .then(response => response.json())
+        .then(data => {
+          if (data.vnc_url) {
+            const rfb = new RFB(
+              document.getElementById('vnc_container'),
+              data.vnc_url,
+              {credentials: {password: data.vnc_password}}
+            );
+            rfb.viewOnly = false;
+          } else {
+            document.getElementById('vnc_container').innerText = data.error || '无法加载控制台';
+          }
+        })
+        .catch(err => {
+          console.error('VNC 控制台连接失败：', err);
+          document.getElementById('vnc_container').innerText = '控制台连接失败';
+        });
+    })();
+  </script>
+</div>
+{% endif %}
+
 <a href="{% url 'frontend:vm_list' %}" class="btn btn-secondary mt-3">返回虚拟机列表</a>
 {% endblock %}
