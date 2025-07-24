@@ -5,7 +5,6 @@
 <p>{{ template.description }}</p>
 <p>课程: {{ template.course.name }}</p>
 <p>上传者: {{ template.owner.username }}</p>
-<p>文件: <a href="{{ template.file_path }}" download>{{ template.file_path|basename }}</a></p>
 <p>公开: {% if template.is_public %}是{% else %}否{% endif %}</p>
 <a href="{% url 'frontend:template_list' %}" class="btn btn-secondary">返回列表</a>
 {% endblock %}
