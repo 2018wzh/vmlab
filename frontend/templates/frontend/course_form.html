@@ -1,0 +1,38 @@
+{% extends 'frontend/base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<h2 class="mb-4">{{ title }}</h2>
+<form method="post">
+  {% csrf_token %}
+  <div class="mb-3">
+    {{ form.name.label_tag }}
+    {{ form.name }}
+    {% if form.name.errors %}
+      <div class="text-danger">{{ form.name.errors }}</div>
+    {% endif %}
+  </div>
+  <div class="mb-3">
+    {{ form.description.label_tag }}
+    {{ form.description }}
+    {% if form.description.errors %}
+      <div class="text-danger">{{ form.description.errors }}</div>
+    {% endif %}
+  </div>
+  <div class="mb-3">
+    {{ form.teachers.label_tag }}
+    {{ form.teachers }}
+    {% if form.teachers.errors %}
+      <div class="text-danger">{{ form.teachers.errors }}</div>
+    {% endif %}
+  </div>
+  <div class="mb-3">
+    {{ form.students.label_tag }}
+    {{ form.students }}
+    {% if form.students.errors %}
+      <div class="text-danger">{{ form.students.errors }}</div>
+    {% endif %}
+  </div>
+  <button type="submit" class="btn btn-primary">提交</button>
+  <a href="{% url 'frontend:course_list' %}" class="btn btn-secondary">取消</a>
+</form>
+{% endblock %}

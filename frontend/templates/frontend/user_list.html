@@ -1,0 +1,27 @@
+{% extends 'frontend/base.html' %}
+{% block title %}用户管理 - VMLab{% endblock %}
+{% block content %}
+<h2 class="mb-4">用户管理</h2>
+<a href="{% url 'frontend:user_create' %}" class="btn btn-primary mb-3">创建用户</a>
+<table class="table table-striped">
+  <thead>
+    <tr><th>#</th><th>用户名</th><th>姓名</th><th>邮箱</th><th>操作</th></tr>
+  </thead>
+  <tbody>
+    {% for user in users %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ user.username }}</td>
+        <td>{{ user.get_full_name }}</td>
+        <td>{{ user.email }}</td>
+        <td>
+          <a href="{% url 'frontend:user_update' user.pk %}" class="btn btn-sm btn-secondary">编辑</a>
+          <a href="{% url 'frontend:user_delete' user.pk %}" class="btn btn-sm btn-danger">删除</a>
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="5">暂无用户。</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

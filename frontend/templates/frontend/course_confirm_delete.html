@@ -1,0 +1,10 @@
+{% extends 'frontend/base.html' %}
+{% block title %}删除课程{% endblock %}
+{% block content %}
+<h2>确认删除课程：{{ course.name }}</h2>
+<form method="post">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-danger">删除</button>
+  <a href="{% url 'frontend:course_detail' course.id %}" class="btn btn-secondary">取消</a>
+</form>
+{% endblock %}
