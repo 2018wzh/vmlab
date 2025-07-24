@@ -129,216 +129,44 @@ VMLab是一个基于Django和Libvirt的现代化虚拟机实验平台，专为�
   - [x] 控制台访问API
   - [x] 权限控制（基于角色）
 
-### 第五阶段：前端界面开发 🎨
+### 第五阶段：Django 前端开发 🎨
+- [ ] 环境与项目初始化
+  - [ ] 创建 Django 前端应用 `frontend`
+  - [ ] 配置 INSTALLED_APPS、模板目录和静态文件路径
+  - [ ] 集成 Bootstrap 5（通过 npm 或 CDN）
+  - [ ] 配置静态文件收集和压缩
 
-#### 5.1 项目基础搭建
-- [ ] **环境初始化**
-  - [ ] 使用Vite创建Vue 3项目 (npm create vue@latest vmlab-frontend)
-  - [ ] 安装核心依赖：Vue 3.4+、TypeScript、Vue Router 4、Pinia
-  - [ ] 安装UI框架：Vuetify 3.x (Material Design 3)
-  - [ ] 安装HTTP库：Axios、@vueuse/core (组合式API工具)
-  - [ ] 配置开发环境代理到后端API
+- [ ] 基础模板与布局组件
+  - [ ] 设计 `base.html`，包含顶部导航和侧边栏
+  - [ ] 实现模板继承，提取公共布局
+  - [ ] 创建导航栏、侧边栏、页脚等 include 模板
 
-- [ ] **项目结构设置**
-  - [ ] 创建TypeScript目录结构（src/components、views、stores、api、types等）
-  - [ ] 配置Vue Router 4路由系统
-  - [ ] 初始化Pinia状态管理
-  - [ ] 配置Vuetify 3主题（Material Design 3配色）
-  - [ ] 设置ESLint + Prettier + TypeScript配置
+- [ ] 页面视图开发
+  - [ ] 登录/注册页面（使用 Django Auth）
+  - [ ] 仪表盘视图，展示虚拟机监控数据和统计卡片
+  - [ ] 课程列表/详情视图（ListView、DetailView）
+  - [ ] 虚拟机列表/详情视图
 
-#### 5.2 API集成层开发
-- [ ] **API服务模块**
-  - [ ] 创建axios实例配置（src/api/index.ts）
-  - [ ] 定义API响应类型（src/types/api.ts）
-  - [ ] 实现请求/响应拦截器（Token、错误处理）
-  - [ ] 创建认证API模块（src/api/auth.ts）
-  - [ ] 创建用户管理API模块（src/api/users.ts）
-  - [ ] 创建课程管理API模块（src/api/courses.ts）
-  - [ ] 创建虚拟机管理API模块（src/api/vms.ts）
+- [ ] 表单与交互
+  - [ ] 用户管理表单：列表、创建、编辑、删除
+  - [ ] 课程管理表单：列表、创建、编辑、删除
+  - [ ] 虚拟机创建/更新表单，集成资源配额校验
+  - [ ] 控制台访问按钮，触发 WebSocket 或 HTMX 请求
 
-- [ ] **状态管理设计**
-  - [ ] 认证Store（src/stores/auth.ts - Pinia）
-  - [ ] 用户Store（src/stores/users.ts）
-  - [ ] 课程Store（src/stores/courses.ts）
-  - [ ] 虚拟机Store（src/stores/vms.ts）
-  - [ ] 通知Store（src/stores/notifications.ts）
+- [ ] API 集成与动态更新
+  - [ ] 使用 Django REST Framework 提供 API 端点 `/api/`
+  - [ ] 在模板中使用 HTMX 调用 API，实现局部刷新
+  - [ ] 实现虚拟机状态实时更新（轮询或 WebSocket）
 
-#### 5.3 通用组件开发
-- [ ] **基础组件库（Composition API + TypeScript）**
-  - [ ] 数据表格组件（DataTable.vue - 使用&lt;script setup&gt;）
-  - [ ] 表单组件集（FormInput.vue、FormSelect.vue等）
-  - [ ] 对话框组件（ConfirmDialog.vue、FormDialog.vue）
-  - [ ] 通知提示组件（NotificationSnackbar.vue）
-  - [ ] 加载状态组件（LoadingSpinner.vue、LoadingOverlay.vue）
-  - [ ] 定义组件Props类型接口
+- [ ] 测试和优化
+  - [ ] 为视图和模板编写单元测试
+  - [ ] 使用 Selenium 或 Cypress 进行端到端测试
+  - [ ] 静态文件压缩及 CDN 集成
 
-- [ ] **业务组件开发**
-  - [ ] 虚拟机状态卡片（VMStatusCard.vue）
-  - [ ] 资源使用图表（ResourceChart.vue - 使用Chart.js或ECharts）
-  - [ ] 用户角色标签（UserRoleBadge.vue）
-  - [ ] 文件上传组件（FileUpload.vue - 支持拖拽）
-
-#### 5.4 布局框架实现
-- [ ] **主布局组件（Composition API）**
-  - [ ] 应用栏组件（AppBar.vue）
-    - [ ] Logo和品牌标识
-    - [ ] 全局搜索框（使用@vueuse/core的useDebounceFn）
-    - [ ] 用户头像和下拉菜单
-    - [ ] 深色模式切换按钮
-  - [ ] 侧边导航栏（NavigationDrawer.vue）
-    - [ ] 导航菜单项（动态路由生成）
-    - [ ] 角色权限控制显示
-    - [ ] 收起/展开功能（响应式状态）
-  - [ ] 主布局容器（DefaultLayout.vue）
-    - [ ] Vuetify 3 v-app结构
-    - [ ] 响应式布局适配
-    - [ ] 内容区域路由视图（Suspense包装）
-
-#### 5.5 认证系统模块
-- [ ] **登录注册页面（Composition API + TypeScript）**
-  - [ ] 登录页面（Login.vue）
-    - [ ] 响应式表单（useForm组合函数）
-    - [ ] 表单验证（Vee-Validate或自定义验证）
-    - [ ] "记住我"功能（localStorage）
-    - [ ] 与`/api/auth/login/`接口集成
-    - [ ] 加载状态和错误处理
-  - [ ] 注册页面（Register.vue）
-    - [ ] 多步骤表单组件
-    - [ ] 用户信息输入（响应式验证）
-    - [ ] 角色选择（学生/教师）
-    - [ ] 与`/api/auth/register/`接口集成
-
-- [ ] **认证状态管理（Pinia）**
-  - [ ] JWT Token存储和刷新机制
-  - [ ] 登录状态持久化（localStorage/sessionStorage）
-  - [ ] 路由守卫实现（beforeEach）
-  - [ ] 自动登出功能（Token过期检测）
-
-#### 5.6 用户管理模块
-- [ ] **用户列表管理**
-  - [ ] 用户列表页面（UserList.vue）
-    - [ ] 数据表格展示用户信息
-    - [ ] 搜索和筛选功能
-    - [ ] 分页控制
-    - [ ] 与`/api/users/`接口集成
-  - [ ] 用户详情页面（UserDetail.vue）
-    - [ ] 用户基本信息展示
-    - [ ] 配额信息显示
-    - [ ] 角色管理功能
-
-- [ ] **用户操作功能**
-  - [ ] 创建用户对话框
-  - [ ] 编辑用户信息
-  - [ ] 配额管理界面
-  - [ ] 角色分配功能
-
-#### 5.7 课程管理模块
-- [ ] **课程列表和详情**
-  - [ ] 课程列表页面（CourseList.vue）
-    - [ ] 表格式布局展示课程
-    - [ ] 课程搜索和筛选
-    - [ ] 新建课程按钮
-    - [ ] 与`/api/courses/`接口集成
-  - [ ] 课程详情页面（CourseDetail.vue）
-    - [ ] 课程基本信息卡片
-    - [ ] 成员管理标签页（学生、教师列表）
-    - [ ] 虚拟机模板管理
-    - [ ] 统计信息展示
-
-- [ ] **课程成员管理**
-  - [ ] 学生列表组件（StudentList.vue）
-  - [ ] 添加学生对话框
-  - [ ] 教师管理组件
-  - [ ] 成员搜索和批量操作
-
-- [ ] **模板管理功能**
-  - [ ] 模板列表展示
-  - [ ] 模板上传组件
-  - [ ] 模板分配给课程
-  - [ ] 与`/api/templates/`接口集成
-
-#### 5.8 虚拟机管理模块
-- [ ] **虚拟机列表展示**
-  - [ ] 虚拟机列表页面（VMList.vue）
-    - [ ] 卡片布局展示虚拟机
-    - [ ] 状态指示器（运行/停止/暂停）
-    - [ ] 快速操作按钮（启动/停止/重启）
-    - [ ] 与`/api/vms/`接口集成
-  - [ ] 虚拟机详情页面（VMDetail.vue）
-    - [ ] 详细配置信息
-    - [ ] 资源使用监控图表
-    - [ ] 操作日志展示
-
-- [ ] **虚拟机操作功能**
-  - [ ] 创建虚拟机向导
-    - [ ] 选择模板步骤
-    - [ ] 配置资源（CPU、内存、磁盘）
-    - [ ] 选择课程关联
-    - [ ] 配额验证提示
-  - [ ] 虚拟机控制组件
-    - [ ] 启动/停止/重启按钮
-    - [ ] 暂停/恢复功能
-    - [ ] 删除确认对话框
-
-- [ ] **资源监控展示**
-  - [ ] 实时状态更新（与`/api/vms/{id}/status/`集成）
-  - [ ] 性能指标图表（与`/api/vms/{id}/metrics/`集成）
-  - [ ] CPU、内存、磁盘、网络使用率
-
-
-#### 5.9 VNC控制台模块
-- [ ] **VNC控制台集成（现代化方案）**
-  - [ ] 安装noVNC或替代方案（@novnc/novnc）
-  - [ ] VNC控制台组件（VNCConsole.vue）
-    - [ ] 使用Composition API封装
-    - [ ] WebSocket连接管理（useWebSocket from @vueuse/core）
-    - [ ] 错误处理和重连机制
-    - [ ] 与`/api/vms/{id}/console_vnc/`集成
-  - [ ] 控制台功能增强
-    - [ ] 全屏模式支持（Fullscreen API）
-    - [ ] 快捷键处理（useEventListener）
-    - [ ] 分辨率自适应（useResizeObserver）
-    - [ ] 连接状态指示器
-
-#### 5.10 WebSocket实时更新
-- [ ] **WebSocket集成（@vueuse/core）**
-  - [ ] 使用useWebSocket管理连接
-  - [ ] 虚拟机状态实时更新
-  - [ ] 资源监控数据推送
-  - [ ] 系统通知推送
-  - [ ] 自动断线重连机制
-  - [ ] 心跳检测实现
-
-#### 5.11 路由和权限控制
-- [ ] **路由系统完善（Vue Router 4）**
-  - [ ] 路由配置和嵌套路由（TypeScript定义）
-  - [ ] 路由守卫实现（beforeEach、meta字段）
-  - [ ] 基于角色的页面访问控制
-  - [ ] 404页面和错误处理
-  - [ ] 懒加载路由组件
-
-- [ ] **权限控制实现**
-  - [ ] 自定义指令v-permission
-  - [ ] 组件级权限控制（Composition API）
-  - [ ] 菜单项权限显示（computed属性）
-  - [ ] 操作按钮权限控制
-  - [ ] API调用权限验证
-
-#### 5.12 样式和主题
-- [ ] **UI样式完善（现代化设计）**
-  - [ ] Vuetify 3主题定制（Material Design 3）
-  - [ ] 深色模式支持（useTheme）
-  - [ ] 响应式设计优化（CSS Grid + Flexbox）
-  - [ ] 自定义CSS变量系统
-  - [ ] 动画和过渡效果（Vue Transition）
-
-#### 5.13 测试和优化
-- [ ] **前端测试（现代化测试栈）**
-  - [ ] 单元测试（Vitest + Vue Test Utils）
-  - [ ] 组件测试（@vue/test-utils）
-  - [ ] E2E测试（Playwright或Cypress）
-  - [ ] TypeScript类型检查
-
+- [ ] 部署准备
+  - [ ] 配置 Nginx + Gunicorn/Daphne 部署
+  - [ ] 设置 SSL 证书和域名
+  - [ ] 优化缓存策略和安全配置
 
 ### 第六阶段：系统优化与部署 🚀
 #### 6.1 文档编写

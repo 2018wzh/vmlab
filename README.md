@@ -45,7 +45,11 @@ VMLab是一个基于Django和Libvirt的现代化虚拟机实验平台，专为�
 - **虚拟机分配**：教师可以将上传qcow2磁盘作为虚拟机模板供学生使用
 
 ## 技术栈
-- **Web框架**: Django + Material Design
+- **后端框架**: Django 5.2.4
+- **前端框架**: Django Templates + Bootstrap 5
+- **API 框架**: Django REST Framework
+- **表单处理**: Django Forms
+- **可选交互**: HTMX
 - **数据库**: SQLite
 - **虚拟化**: Libvirt + KVM/QEMU
 - **配置**: YAML
