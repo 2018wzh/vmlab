@@ -3,10 +3,14 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import CustomUserCreationForm, CourseForm, VMForm
 from django.contrib.auth.decorators import login_required
-from apps.courses.models import Course
+from apps.courses.models import Course, VirtualMachineTemplate
 from apps.vms.models import VirtualMachine
 from django.contrib.auth import get_user_model
-from .forms import UserForm
+from .forms import UserForm, CourseStudentForm, VMTemplateForm
+from django.db.models import Q
+from django.core.files.storage import FileSystemStorage
+from django.conf import settings
+import os
 
 
 def index(request):
@@ -88,10 +92,13 @@ def course_detail(request, course_id):
     course = get_object_or_404(Course, id=course_id)
     students = course.students.all()
     teachers = course.teachers.all()
+    # 课程添加学生表单
+    add_student_form = CourseStudentForm()
     return render(request, 'frontend/course_detail.html', {
         'course': course,
         'students': students,
         'teachers': teachers,
+        'add_student_form': add_student_form,
     })
 
 @login_required
@@ -138,6 +145,11 @@ def vm_delete(request, vm_id):
         return redirect('frontend:vm_list')
     return render(request, 'frontend/vm_confirm_delete.html', {'vm': vm})
    
+@login_required
+def vm_detail(request, vm_id):
+    vm = get_object_or_404(VirtualMachine, id=vm_id)
+    return render(request, 'frontend/vm_detail.html', {'vm': vm})
+
 # 用户管理视图
 User = get_user_model()
 
@@ -156,6 +168,23 @@ def user_create(request):
     else:
         form = UserForm()
     return render(request, 'frontend/user_form.html', {'form': form, 'title': '创建用户'})
+
+@login_required
+def course_add_student(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+    form = CourseStudentForm(request.POST)
+    if form.is_valid():
+        student = form.cleaned_data['student']
+        course.students.add(student)
+    return redirect('frontend:course_detail', course_id=course_id)
+
+@login_required
+def course_remove_student(request, course_id, user_id):
+    course = get_object_or_404(Course, id=course_id)
+    User = get_user_model()
+    student = get_object_or_404(User, pk=user_id)
+    course.students.remove(student)
+    return redirect('frontend:course_detail', course_id=course_id)
 
 @login_required
 def user_update(request, user_id):
@@ -183,6 +212,50 @@ def user_profile(request):
     return render(request, 'frontend/user_profile.html', {'user': request.user})
 
 @login_required
-def vm_detail(request, vm_id):
-    vm = get_object_or_404(VirtualMachine, id=vm_id)
-    return render(request, 'frontend/vm_detail.html', {'vm': vm})
+def template_list(request):
+    """虚拟机模板列表"""
+    # 显示用户拥有或公开的模板
+    templates = VirtualMachineTemplate.objects.filter(
+        Q(owner=request.user) | Q(is_public=True)
+    )
+    return render(request, 'frontend/template_list.html', {'templates': templates})
+
+@login_required
+def template_create(request):
+    """创建虚拟机模板"""
+    if request.method == 'POST':
+        form = VMTemplateForm(request.POST, request.FILES)
+        if form.is_valid():
+            template = form.save(commit=False)
+            template.owner = request.user
+            # 保存上传文件
+            file = request.FILES.get('file')
+            fs = FileSystemStorage(location=settings.MEDIA_ROOT + '/templates')
+            filename = fs.save(file.name, file)
+            template.file_path = fs.path(filename)
+            template.save()
+            return redirect('frontend:template_list')
+    else:
+        form = VMTemplateForm()
+    return render(request, 'frontend/template_form.html', {'form': form, 'title': '创建模板'})
+
+@login_required
+def template_detail(request, template_id):
+    """虚拟机模板详情"""
+    template = get_object_or_404(VirtualMachineTemplate, id=template_id)
+    return render(request, 'frontend/template_detail.html', {'template': template})
+
+@login_required
+def template_delete(request, template_id):
+    """删除虚拟机模板"""
+    template = get_object_or_404(VirtualMachineTemplate, id=template_id)
+    if request.method == 'POST':
+        # 删除文件
+        try:
+            os.remove(template.file_path)
+        except Exception:
+            pass
+        template.delete()
+        return redirect('frontend:template_list')
+    return render(request, 'frontend/template_confirm_delete.html', {'template': template})
+

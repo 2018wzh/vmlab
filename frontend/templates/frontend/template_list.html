@@ -1,0 +1,35 @@
+{% extends 'frontend/base.html' %}
+{% block title %}虚拟机模板列表 - VMLab{% endblock %}
+{% block content %}
+<h2 class="mb-4">虚拟机模板</h2>
+<a href="{% url 'frontend:template_create' %}" class="btn btn-primary mb-3">上传新模板</a>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>名称</th>
+      <th>课程</th>
+      <th>上传者</th>
+      <th>公开</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for tmpl in templates %}
+    <tr>
+      <td>{{ forloop.counter }}</td>
+      <td><a href="{% url 'frontend:template_detail' tmpl.id %}">{{ tmpl.name }}</a></td>
+      <td>{{ tmpl.course.name }}</td>
+      <td>{{ tmpl.owner.username }}</td>
+      <td>{% if tmpl.is_public %}是{% else %}否{% endif %}</td>
+      <td>
+        <a href="{% url 'frontend:template_detail' tmpl.id %}" class="btn btn-sm btn-info">查看</a>
+        <a href="{% url 'frontend:template_delete' tmpl.id %}" class="btn btn-sm btn-danger">删除</a>
+      </td>
+    </tr>
+    {% empty %}
+      <tr><td colspan="6">暂无模板</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

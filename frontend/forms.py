@@ -4,6 +4,7 @@ from django import forms
 from apps.courses.models import Course
 from apps.vms.models import VirtualMachine
 from apps.users.models import Quota
+from apps.courses.models import VirtualMachineTemplate
 
 class CustomUserCreationForm(UserCreationForm):
     """Use custom user model for registration."""
@@ -68,28 +69,22 @@ class UserForm(forms.ModelForm):
         widgets = {
             'role': forms.Select,
         }
+    
+# 课程成员管理表单
+class CourseStudentForm(forms.Form):
+    student = forms.ModelChoiceField(
+        queryset=get_user_model().objects.filter(role__name='student'),
+        label='选择学生',
+        widget=forms.Select
+    )
 
-    def clean(self):
-        cleaned = super().clean()
-        p1 = cleaned.get('password1')
-        p2 = cleaned.get('password2')
-        # 创建用户时必须设置密码；更新时可选
-        if not self.instance.pk:
-            if not p1:
-                self.add_error('password1', '密码为必填项')
-            elif p1 != p2:
-                self.add_error('password2', '两次密码不一致')
-        else:
-            if p1 or p2:
-                if p1 != p2:
-                    self.add_error('password2', '两次密码不一致')
-        return cleaned
+# 虚拟机模板管理表单
+class VMTemplateForm(forms.ModelForm):
+    file = forms.FileField(label='QCOW2 文件')
+    class Meta:
+        model = VirtualMachineTemplate
+        fields = ['name', 'description', 'course', 'is_public']
+        widgets = {
+            'course': forms.Select,
+        }
 
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        p1 = self.cleaned_data.get('password1')
-        if p1:
-            user.set_password(p1)
-        if commit:
-            user.save()
-        return user

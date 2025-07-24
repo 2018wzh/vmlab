@@ -13,6 +13,9 @@ urlpatterns = [
     path('courses/create/', views.course_create, name='course_create'),
     path('courses/<int:course_id>/edit/', views.course_update, name='course_update'),
     path('courses/<int:course_id>/delete/', views.course_delete, name='course_delete'),
+    # 课程成员管理
+    path('courses/<int:course_id>/add_student/', views.course_add_student, name='course_add_student'),
+    path('courses/<int:course_id>/remove_student/<uuid:user_id>/', views.course_remove_student, name='course_remove_student'),
     path('vms/', views.vm_list, name='vm_list'),
     path('vms/rows/', views.vm_list_partial, name='vm_list_partial'),
     path('vms/<uuid:vm_id>/', views.vm_detail, name='vm_detail'),
@@ -27,4 +30,9 @@ urlpatterns = [
     path('users/<uuid:user_id>/delete/', views.user_delete, name='user_delete'),
     # 用户个人信息
     path('profile/', views.user_profile, name='user_profile'),
+    # 虚拟机模板管理
+    path('templates/', views.template_list, name='template_list'),
+    path('templates/create/', views.template_create, name='template_create'),
+    path('templates/<int:template_id>/', views.template_detail, name='template_detail'),
+    path('templates/<int:template_id>/delete/', views.template_delete, name='template_delete'),
 ]

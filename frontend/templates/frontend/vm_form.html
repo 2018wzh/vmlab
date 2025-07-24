@@ -1,0 +1,52 @@
+{% extends 'frontend/base.html' %}
+{% block title %}{{ title }} - VMLab{% endblock %}
+{% block content %}
+<h2 class="mb-4">{{ title }}</h2>
+<form method="post">
+  {% csrf_token %}
+  <div class="mb-3">
+    {{ form.name.label_tag }}
+    {{ form.name }}
+    {% if form.name.errors %}
+      <div class="text-danger">{{ form.name.errors }}</div>
+    {% endif %}
+  </div>
+  <div class="mb-3">
+    {{ form.course.label_tag }}
+    {{ form.course }}
+    {% if form.course.errors %}
+      <div class="text-danger">{{ form.course.errors }}</div>
+    {% endif %}
+  </div>
+  <div class="mb-3">
+    {{ form.template.label_tag }}
+    {{ form.template }}
+    {% if form.template.errors %}
+      <div class="text-danger">{{ form.template.errors }}</div>
+    {% endif %}
+  </div>
+  <div class="mb-3">
+    {{ form.cpu_cores.label_tag }}
+    {{ form.cpu_cores }}
+    {% if form.cpu_cores.errors %}
+      <div class="text-danger">{{ form.cpu_cores.errors }}</div>
+    {% endif %}
+  </div>
+  <div class="mb-3">
+    {{ form.memory_mb.label_tag }}
+    {{ form.memory_mb }}
+    {% if form.memory_mb.errors %}
+      <div class="text-danger">{{ form.memory_mb.errors }}</div>
+    {% endif %}
+  </div>
+  <div class="mb-3">
+    {{ form.disk_gb.label_tag }}
+    {{ form.disk_gb }}
+    {% if form.disk_gb.errors %}
+      <div class="text-danger">{{ form.disk_gb.errors }}</div>
+    {% endif %}
+  </div>
+  <button type="submit" class="btn btn-primary">提交</button>
+  <a href="{% url 'frontend:vm_list' %}" class="btn btn-secondary">取消</a>
+</form>
+{% endblock %}

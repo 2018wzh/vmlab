@@ -46,7 +46,7 @@ class LibvirtManager:
     
     def _generate_vm_xml(self, name: str, uuid: str, memory_mb: int, 
                         cpu_cores: int, disk_path: str, vnc_port: int,
-                        mac_address: str) -> str:
+                        mac_address: str, vnc_password: str) -> str:
         """
         生成虚拟机XML配置
         
@@ -92,6 +92,7 @@ class LibvirtManager:
     </interface>
     <graphics type='vnc' port='{vnc_port}' autoport='no' listen='0.0.0.0'>
       <listen type='address' address='0.0.0.0'/>
+      <passwd>{vnc_password}</passwd>
     </graphics>
     <video>
       <model type='cirrus'/>
@@ -122,6 +123,13 @@ class LibvirtManager:
             if self._is_port_available(port):
                 return port
         raise Exception("无法找到可用的VNC端口")
+
+    
+    def _generate_vnc_password(self, length: int = 8) -> str:
+        """生成随机VNC密码"""
+        import random, string
+        chars = string.ascii_letters + string.digits
+        return ''.join(random.choice(chars) for _ in range(length))
     
     def _is_port_available(self, port: int) -> bool:
         """检查端口是否可用"""
@@ -138,11 +146,11 @@ class LibvirtManager:
         Args:
             name: 虚拟机名称
             uuid: UUID
-            memory_mb: 内存大小(MB)
+            memory_mb: 内存大小 (MB)
             cpu_cores: CPU核心数
             template_path: 模板文件路径
             storage_dir: 存储目录
-            
+
         Returns:
             包含虚拟机信息的字典
         """
@@ -161,12 +169,13 @@ class LibvirtManager:
             # 生成配置
             mac_address = self._generate_mac_address()
             vnc_port = self._find_available_vnc_port()
+            vnc_password = self._generate_vnc_password()
             
             # 创建虚拟机磁盘
             disk_path = f"{storage_dir}/{name}.qcow2"
             self._create_vm_disk(template_path, disk_path)
             
-            # 生成XML配置
+            # 生成XML配置，包含VNC密码
             xml_config = self._generate_vm_xml(
                 name=name,
                 uuid=uuid,
@@ -174,7 +183,8 @@ class LibvirtManager:
                 cpu_cores=cpu_cores,
                 disk_path=disk_path,
                 vnc_port=vnc_port,
-                mac_address=mac_address
+                mac_address=mac_address,
+                vnc_password=vnc_password
             )
             
             # 定义虚拟机
@@ -187,6 +197,7 @@ class LibvirtManager:
                 'uuid': uuid,
                 'mac_address': mac_address,
                 'vnc_port': vnc_port,
+                'vnc_password': vnc_password,
                 'disk_path': disk_path,
                 'status': 'stopped'
             }

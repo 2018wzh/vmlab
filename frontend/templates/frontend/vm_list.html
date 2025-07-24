@@ -2,6 +2,7 @@
 {% block title %}Virtual Machines - VMLab{% endblock %}
 {% block content %}
 <h2 class="mb-4">My Virtual Machines</h2>
+<a href="{% url 'frontend:vm_create' %}" class="btn btn-primary mb-3">创建虚拟机</a>
 <table class="table table-striped">
   <thead>
     <tr>

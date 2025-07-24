@@ -45,8 +45,11 @@ def create_vm_task(self, vm_id: str):
         
         # 更新虚拟机信息
         vm.uuid = vm_uuid
-        vm.mac_address = vm_info['mac_address']
-        vm.vnc_port = vm_info['vnc_port']
+        vm.mac_address = vm_info.get('mac_address')
+        vm.vnc_port = vm_info.get('vnc_port')
+        # 保存 VNC 密码
+        if 'vnc_password' in vm_info:
+            vm.vnc_password = vm_info['vnc_password']
         vm.status = 'stopped'
         vm.save()
         

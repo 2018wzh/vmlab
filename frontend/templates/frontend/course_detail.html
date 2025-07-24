@@ -13,10 +13,24 @@
   {% endfor %}
 </ul>
 <hr>
+<!-- 添加学生表单 -->
+<h4>添加学生</h4>
+<form method="post" action="{% url 'frontend:course_add_student' course.id %}">
+  {% csrf_token %}
+  <div class="mb-3">
+    {{ add_student_form.student.label_tag }}
+    {{ add_student_form.student }}
+  </div>
+  <button type="submit" class="btn btn-primary mb-3">添加学生</button>
+</form>
+<hr>
 <h4>学生</h4>
 <ul>
   {% for student in students %}
-    <li>{{ student.username }}</li>
+    <li>
+      {{ student.username }}
+      <a href="{% url 'frontend:course_remove_student' course.id student.id %}" class="btn btn-sm btn-danger ms-2">移除</a>
+    </li>
   {% empty %}
     <li>暂无学生</li>
   {% endfor %}
