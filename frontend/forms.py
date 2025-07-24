@@ -69,6 +69,37 @@ class UserForm(forms.ModelForm):
         widgets = {
             'role': forms.Select,
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # 新增用户时密码为必填
+        if not self.instance.pk:
+            self.fields['password1'].required = True
+            self.fields['password2'].required = True
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password1 = cleaned_data.get('password1')
+        password2 = cleaned_data.get('password2')
+        # 新增用户时密码不能为空
+        if not self.instance.pk:
+            if not password1:
+                self.add_error('password1', '密码不能为空')
+            if not password2:
+                self.add_error('password2', '确认密码不能为空')
+        if password1 or password2:
+            if password1 != password2:
+                self.add_error('password2', '两次输入的密码不匹配')
+        return cleaned_data
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        password = self.cleaned_data.get('password1')
+        if password:
+            user.set_password(password)
+        if commit:
+            user.save()
+        return user
     
 # 课程成员管理表单
 class CourseStudentForm(forms.Form):
