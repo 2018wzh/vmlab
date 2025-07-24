@@ -86,7 +86,7 @@
 | `cpu_cores` | `IntegerField` | CPU核心数 | |
 | `memory_mb` | `IntegerField` | 内存大小 (MB) | |
 | `disk_gb` | `IntegerField` | 磁盘大小 (GB) | |
-| `status` | `CharField` | 虚拟机状态 | "running", "stopped", "paused", "error" |
+| `status` | `CharField` | 虚拟机状态 | "creating", "stopped", "running", "paused", "error", "deleting" |
 | `ip_address` | `GenericIPAddressField` | IP地址 | |
 | `mac_address` | `CharField` | MAC地址 | |
 | `vnc_port` | `IntegerField` | VNC端口 | |
