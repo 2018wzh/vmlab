@@ -14,6 +14,7 @@ urlpatterns = [
     path('courses/<int:course_id>/edit/', views.course_update, name='course_update'),
     path('courses/<int:course_id>/delete/', views.course_delete, name='course_delete'),
     path('vms/', views.vm_list, name='vm_list'),
+    path('vms/rows/', views.vm_list_partial, name='vm_list_partial'),
     path('vms/<uuid:vm_id>/', views.vm_detail, name='vm_detail'),
     path('vms/create/', views.vm_create, name='vm_create'),
     path('vms/<uuid:vm_id>/edit/', views.vm_update, name='vm_update'),

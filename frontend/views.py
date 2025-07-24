@@ -100,6 +100,12 @@ def vm_list(request):
     return render(request, 'frontend/vm_list.html', {'vms': vms})
 
 @login_required
+def vm_list_partial(request):
+    """HTMX 局部刷新虚拟机列表行"""
+    vms = VirtualMachine.objects.filter(owner=request.user)
+    return render(request, 'frontend/partials/vm_list_rows.html', {'vms': vms})
+
+@login_required
 def vm_create(request):
     if request.method == 'POST':
         form = VMForm(request.POST)
@@ -166,10 +172,8 @@ def user_update(request, user_id):
 @login_required
 def user_delete(request, user_id):
     user = get_object_or_404(User, pk=user_id)
-    if request.method == 'POST':
-        user.delete()
-        return redirect('frontend:user_list')
-    return render(request, 'frontend/user_confirm_delete.html', {'user': user})
+    user.delete()
+    return redirect('frontend:user_list')
 
 @login_required
 def vm_detail(request, vm_id):

@@ -61,6 +61,8 @@ def test_user_create_view_and_creates_user(client, admin_user):
         'role': admin_user.role.pk,
         'is_active': True,
         'is_staff': False,
+        'password1': 'pass12345',
+        'password2': 'pass12345',
     }
     response = client.post(url, data)
     assert response.status_code == 302

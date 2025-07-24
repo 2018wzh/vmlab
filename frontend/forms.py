@@ -59,9 +59,37 @@ class VMForm(forms.ModelForm):
 # 用户管理表单
 User = get_user_model()
 class UserForm(forms.ModelForm):
+    # 密码字段
+    password1 = forms.CharField(label='密码', widget=forms.PasswordInput, required=False)
+    password2 = forms.CharField(label='确认密码', widget=forms.PasswordInput, required=False)
     class Meta:
         model = User
         fields = ['username', 'first_name', 'last_name', 'email', 'role', 'is_active', 'is_staff']
         widgets = {
             'role': forms.Select,
         }
+
+    def clean(self):
+        cleaned = super().clean()
+        p1 = cleaned.get('password1')
+        p2 = cleaned.get('password2')
+        # 创建用户时必须设置密码；更新时可选
+        if not self.instance.pk:
+            if not p1:
+                self.add_error('password1', '密码为必填项')
+            elif p1 != p2:
+                self.add_error('password2', '两次密码不一致')
+        else:
+            if p1 or p2:
+                if p1 != p2:
+                    self.add_error('password2', '两次密码不一致')
+        return cleaned
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        p1 = self.cleaned_data.get('password1')
+        if p1:
+            user.set_password(p1)
+        if commit:
+            user.save()
+        return user

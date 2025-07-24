@@ -45,6 +45,20 @@
   <div class="mb-3 form-check">
     {{ form.is_staff }} {{ form.is_staff.label_tag }}
   </div>
+  <div class="mb-3">
+    {{ form.password1.label_tag }}
+    {{ form.password1 }}
+    {% if form.password1.errors %}
+      <div class="text-danger">{{ form.password1.errors }}</div>
+    {% endif %}
+  </div>
+  <div class="mb-3">
+    {{ form.password2.label_tag }}
+    {{ form.password2 }}
+    {% if form.password2.errors %}
+      <div class="text-danger">{{ form.password2.errors }}</div>
+    {% endif %}
+  </div>
   <button type="submit" class="btn btn-primary">提交</button>
   <a href="{% url 'frontend:user_list' %}" class="btn btn-secondary">取消</a>
 </form>
