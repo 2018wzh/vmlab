@@ -1,4 +1,4 @@
-# Dockerfile for Production Django Backend
+# Dockerfile for Django Backend
 FROM python:3.11-slim-bullseye
 
 # 设置环境变量
@@ -16,7 +16,6 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     libxslt-dev \
     zlib1g-dev \
-    libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # 设置工作目录
@@ -32,11 +31,11 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # 复制应用代码
 COPY . .
 
-# 创建必要的目录
-RUN mkdir -p /app/logs /app/staticfiles /app/media
+# 创建日志目录
+RUN mkdir -p /app/logs
 
 # 收集静态文件
-RUN python manage.py collectstatic --noinput --settings=vmlab.settings_prod
+RUN python manage.py collectstatic --noinput --settings=vmlab.settings
 
 # 创建非root用户
 RUN adduser --disabled-password --gecos '' vmlab && \
