@@ -8,7 +8,6 @@
 [![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/)
 [![Libvirt](https://img.shields.io/badge/Libvirt-KVM/QEMU-red.svg)](https://libvirt.org/)
 [![Material Design](https://img.shields.io/badge/UI-Material_Design-purple.svg)](https://material.io/)
-[![Claude Sonnet 4](https://img.shields.io/badge/Github_Copilot-Claude_Sonnet_4-orange.svg)](https://anthropic.com)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 **现代化的虚拟机管理和实验教学平台**
