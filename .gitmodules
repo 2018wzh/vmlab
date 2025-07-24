@@ -1,0 +1,3 @@
+[submodule "frontend/static/novnc"]
+	path = frontend/static/novnc
+	url = https://github.com/novnc/noVNC.git

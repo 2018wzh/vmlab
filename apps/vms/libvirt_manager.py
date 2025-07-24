@@ -7,6 +7,7 @@ import random
 import string
 import logging
 import time
+import os
 from typing import Any, Dict, List, Optional, Tuple
 from django.conf import settings
 
@@ -28,7 +29,8 @@ class LibvirtManager:
         """
         self.uri = uri
         self.conn = None
-        self._connect()
+        if not os.environ.get('DOCKER_BUILDING'):
+            self._connect()
     
     def _connect(self):
         """建立Libvirt连接"""

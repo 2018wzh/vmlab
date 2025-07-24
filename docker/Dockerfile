@@ -34,14 +34,6 @@ COPY . .
 # 创建日志目录
 RUN mkdir -p /app/logs
 
-# 收集静态文件
-RUN python manage.py collectstatic --noinput --settings=vmlab.settings
-
-# 创建非root用户
-RUN adduser --disabled-password --gecos '' vmlab && \
-    chown -R vmlab:vmlab /app
-USER vmlab
-
 # 暴露端口
 EXPOSE 8000
 

@@ -149,6 +149,10 @@ AUTH_USER_MODEL = 'users.User'
 # Directory where libvirt stores VM images
 LIBVIRT_STORAGE_DIR = '/var/lib/libvirt/images'
 
+STATICFILES_DIRS = [
+    BASE_DIR / 'frontend' / 'static'
+]
+
 # Django REST Framework
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (

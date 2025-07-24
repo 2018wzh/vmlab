@@ -11,7 +11,6 @@ services:
       POSTGRES_PASSWORD: vmlab_password
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
     healthcheck:
@@ -39,7 +38,7 @@ services:
   backend:
     build:
       context: .
-      dockerfile: Dockerfile.backend
+      dockerfile: docker/Dockerfile
     restart: unless-stopped
     environment:
       - DEBUG=0
@@ -76,7 +75,6 @@ services:
     depends_on:
       backend:
         condition: service_started
-
 volumes:
   postgres_data:
   redis_data:
