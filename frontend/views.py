@@ -172,8 +172,10 @@ def user_update(request, user_id):
 @login_required
 def user_delete(request, user_id):
     user = get_object_or_404(User, pk=user_id)
-    user.delete()
-    return redirect('frontend:user_list')
+    if request.method == 'POST':
+        user.delete()
+        return redirect('frontend:user_list')
+    return render(request, 'frontend/user_confirm_delete.html', {'user': user})
 
 @login_required
 def user_profile(request):

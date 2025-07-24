@@ -1,0 +1,10 @@
+{% extends 'frontend/base.html' %}
+{% block title %}删除用户 - VMLab{% endblock %}
+{% block content %}
+<h2 class="mb-4">确认删除用户：{{ user.username }}</h2>
+<form method="post">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-danger">删除</button>
+  <a href="{% url 'frontend:user_list' %}" class="btn btn-secondary">取消</a>
+</form>
+{% endblock %}

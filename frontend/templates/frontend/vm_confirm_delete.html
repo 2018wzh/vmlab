@@ -1,0 +1,10 @@
+{% extends 'frontend/base.html' %}
+{% block title %}删除虚拟机 - VMLab{% endblock %}
+{% block content %}
+<h2 class="mb-4">确认删除虚拟机：{{ vm.name }}</h2>
+<form method="post">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-danger">删除</button>
+  <a href="{% url 'frontend:vm_detail' vm.id %}" class="btn btn-secondary">取消</a>
+</form>
+{% endblock %}
