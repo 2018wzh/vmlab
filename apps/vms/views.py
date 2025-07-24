@@ -21,6 +21,10 @@ from apps.vms.serializers import (
 )
 from apps.vms.services import vm_service
 from apps.vms.libvirt_manager import libvirt_manager
+import os, shutil
+from django.conf import settings
+from apps.courses.models import VirtualMachineTemplate
+from apps.courses.serializers import VirtualMachineTemplateSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -396,3 +400,37 @@ class VirtualMachineViewSet(viewsets.ModelViewSet):
         
         serializer = self.get_serializer(vms.order_by('-created_at'), many=True)
         return Response(serializer.data)
+    
+    @action(detail=True, methods=['post'])
+    def convert_to_template(self, request, pk=None):
+        """将虚拟机转换为模板，仅限课程教师"""
+        vm = self.get_object()
+        # 权限校验：仅课程教师或管理员
+        user = request.user
+        user_role = getattr(user, 'role', None)
+        role_name = getattr(user_role, 'name', None) if user_role else None
+        is_teacher = (role_name == 'teacher' and vm.course and vm.course.teachers.filter(id=user.id).exists())
+        if not (user.is_staff or role_name == 'admin' or is_teacher):
+            return Response({'error': '您没有权限转换此虚拟机'}, status=status.HTTP_403_FORBIDDEN)
+        # 获取模板名称与描述
+        name = request.data.get('name', vm.name)
+        description = request.data.get('description', '')
+        # 复制磁盘文件
+        src = os.path.join(settings.LIBVIRT_STORAGE_DIR, f"{vm.name}.qcow2")
+        dest_dir = os.path.join(settings.LIBVIRT_STORAGE_DIR, 'templates')
+        os.makedirs(dest_dir, exist_ok=True)
+        dest = os.path.join(dest_dir, f"{name}_{vm.name}.qcow2")
+        try:
+            shutil.copyfile(src, dest)
+            template = VirtualMachineTemplate.objects.create(
+                name=name,
+                description=description,
+                file_path=dest,
+                owner=request.user,
+                course=vm.course
+            )
+            serializer = VirtualMachineTemplateSerializer(template)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            logger.error(f"VM转换为模板失败: {e}")
+            return Response({'error': '转换失败'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

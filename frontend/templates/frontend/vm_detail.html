@@ -42,4 +42,8 @@
 {% endif %}
 
 <a href="{% url 'frontend:vm_list' %}" class="btn btn-secondary mt-3">返回虚拟机列表</a>
+{% comment %} 仅课程教师或管理员可见转换按钮 {% endcomment %}
+{% if request.user.is_staff or (vm.course and request.user in vm.course.teachers.all) %}
+  <a href="{% url 'frontend:vm_convert' vm.id %}" class="btn btn-warning mt-3">转换为模板</a>
+{% endif %}
 {% endblock %}

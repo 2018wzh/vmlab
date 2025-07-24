@@ -22,6 +22,7 @@ urlpatterns = [
     path('vms/create/', views.vm_create, name='vm_create'),
     path('vms/<uuid:vm_id>/edit/', views.vm_update, name='vm_update'),
     path('vms/<uuid:vm_id>/delete/', views.vm_delete, name='vm_delete'),
+    path('vms/<uuid:vm_id>/convert/', views.vm_convert, name='vm_convert'),
     path('logout/', views.user_logout, name='logout'),
     # 用户管理
     path('users/', views.user_list, name='user_list'),

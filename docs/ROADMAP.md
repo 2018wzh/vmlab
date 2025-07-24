@@ -127,6 +127,7 @@ VMLab是一个基于Django和Libvirt的现代化虚拟机实验平台，专为�
   - [x] 虚拟机状态查询
   - [x] 虚拟机监控数据API
   - [x] 控制台访问API
+  - [ ] 转换虚拟机为模板API（convert_to_template）
   - [x] 权限控制（基于角色）
 
 ### 第五阶段：Django 前端开发 🎨
@@ -151,6 +152,7 @@ VMLab是一个基于Django和Libvirt的现代化虚拟机实验平台，专为�
    - [x] 课程管理表单：列表、创建、编辑、删除
    - [x] 虚拟机创建/更新表单，集成资源配额校验
    - [x] 控制台访问按钮，触发 WebSocket 或 HTMX 请求
+  - [ ] 虚拟机转换为模板功能（教师端）
 
  - [x] API 集成与动态更新
    - [x] 使用 Django REST Framework 提供 API 端点 `/api/`

@@ -1,0 +1,26 @@
+{% extends 'frontend/base.html' %}
+{% block title %}转换虚拟机为模板 - {{ vm.name }}{% endblock %}
+{% block content %}
+<h2>将虚拟机 "{{ vm.name }}" 转换为模板</h2>
+<form method="post">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label for="id_name" class="form-label">模板名称</label>
+    {{ form.name|add_class:"form-control" }}
+  </div>
+  <div class="mb-3">
+    <label for="id_description" class="form-label">描述</label>
+    {{ form.description|add_class:"form-control" }}
+  </div>
+  <div class="mb-3">
+    <label for="id_course" class="form-label">课程</label>
+    {{ form.course|add_class:"form-select" }}
+  </div>
+  <div class="mb-3 form-check">
+    {{ form.is_public|add_class:"form-check-input" }}
+    <label for="id_is_public" class="form-check-label">公开模板</label>
+  </div>
+  <button type="submit" class="btn btn-primary">转换</button>
+  <a href="{% url 'frontend:vm_detail' vm.id %}" class="btn btn-secondary">取消</a>
+</form>
+{% endblock %}

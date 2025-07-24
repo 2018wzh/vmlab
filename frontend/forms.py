@@ -88,3 +88,13 @@ class VMTemplateForm(forms.ModelForm):
             'course': forms.Select,
         }
 
+# 虚拟机转换为模板表单
+class VMConvertForm(forms.ModelForm):
+    class Meta:
+        model = VirtualMachineTemplate
+        fields = ['name', 'description', 'course', 'is_public']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 3}),
+            'course': forms.Select,
+        }
+

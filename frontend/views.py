@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.conf import settings
+import os, shutil
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
-from .forms import CustomUserCreationForm, CourseForm, VMForm
+from .forms import CustomUserCreationForm, CourseForm, VMForm, VMConvertForm
 from django.contrib.auth.decorators import login_required
 from apps.courses.models import Course, VirtualMachineTemplate
 from apps.vms.models import VirtualMachine
@@ -149,6 +151,31 @@ def vm_delete(request, vm_id):
 def vm_detail(request, vm_id):
     vm = get_object_or_404(VirtualMachine, id=vm_id)
     return render(request, 'frontend/vm_detail.html', {'vm': vm})
+   
+@login_required
+def vm_convert(request, vm_id):
+    vm = get_object_or_404(VirtualMachine, id=vm_id)
+    # 仅课程教师可转换
+    if not vm.course or request.user not in vm.course.teachers.all():
+        return redirect('frontend:vm_detail', vm_id=vm_id)
+    if request.method == 'POST':
+        form = VMConvertForm(request.POST)
+        if form.is_valid():
+            template = form.save(commit=False)
+            # 复制虚拟机磁盘为模板文件
+            src = os.path.join(settings.LIBVIRT_STORAGE_DIR, f"{vm.name}.qcow2")
+            dest_dir = os.path.join(settings.LIBVIRT_STORAGE_DIR, 'templates')
+            os.makedirs(dest_dir, exist_ok=True)
+            dest = os.path.join(dest_dir, f"{template.name}_{vm.name}.qcow2")
+            shutil.copyfile(src, dest)
+            template.file_path = dest
+            template.owner = request.user
+            template.save()
+            return redirect('frontend:template_detail', template_id=template.id)
+    else:
+        initial = {'name': vm.name, 'course': vm.course.id}
+        form = VMConvertForm(initial=initial)
+    return render(request, 'frontend/vm_convert.html', {'form': form, 'vm': vm})
 
 # 用户管理视图
 User = get_user_model()
