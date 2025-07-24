@@ -2,6 +2,7 @@
 {% block title %}Courses - VMLab{% endblock %}
 {% block content %}
 <h2 class="mb-4">Courses</h2>
+<a href="{% url 'frontend:course_create' %}" class="btn btn-primary mb-3">创建课程</a>
 <table class="table table-striped">
   <thead>
     <tr>
@@ -9,6 +10,7 @@
       <th>Name</th>
       <th>Description</th>
       <th>Teachers</th>
+      <th>操作</th>
     </tr>
   </thead>
   <tbody>
@@ -18,6 +20,11 @@
         <td>{{ course.name }}</td>
         <td>{{ course.description|truncatechars:50 }}</td>
         <td>{{ course.teachers.all|join:", " }}</td>
+        <td>
+          <a href="{% url 'frontend:course_detail' course.id %}" class="btn btn-sm btn-info">管理</a>
+          <a href="{% url 'frontend:course_update' course.id %}" class="btn btn-sm btn-secondary">编辑</a>
+          <a href="{% url 'frontend:course_delete' course.id %}" class="btn btn-sm btn-danger">删除</a>
+        </td>
       </tr>
     {% empty %}
       <tr><td colspan="4">No courses found.</td></tr>
