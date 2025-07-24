@@ -7,7 +7,7 @@ import random
 import string
 import logging
 import time
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 from django.conf import settings
 
 logger = logging.getLogger(__name__)
@@ -16,6 +16,8 @@ class LibvirtManager:
     """
     Libvirt虚拟机管理器
     """
+    # conn 属性在运行时由 libvirt.open 初始化
+    conn: Any
     
     def __init__(self, uri: str = "qemu:///system"):
         """
@@ -187,11 +189,17 @@ class LibvirtManager:
                 vnc_password=vnc_password
             )
             
-            # 定义虚拟机
+            # 定义并启动虚拟机
             domain = self.conn.defineXML(xml_config)
-            
-            logger.info(f"虚拟机 {name} 创建成功")
-            
+            try:
+                result = domain.create()
+                if result != 0:
+                    raise Exception(f"启动虚拟机 {name} 失败, 返回码: {result}")
+            except libvirt.libvirtError as e:
+                logger.error(f"启动虚拟机失败: {e}")
+                raise
+            logger.info(f"虚拟机 {name} 创建并启动成功")
+
             return {
                 'name': name,
                 'uuid': uuid,
@@ -199,7 +207,7 @@ class LibvirtManager:
                 'vnc_port': vnc_port,
                 'vnc_password': vnc_password,
                 'disk_path': disk_path,
-                'status': 'stopped'
+                'status': 'running'
             }
             
         except Exception as e:
@@ -235,24 +243,34 @@ class LibvirtManager:
             操作是否成功
         """
         self._ensure_connection()
-        
+        # 确保连接已建立，用于类型检查
+        assert self.conn is not None
+
+        # 检查虚拟机是否存在
         try:
             domain = self.conn.lookupByName(name)
-            if domain.isActive():
-                logger.warning(f"虚拟机 {name} 已经在运行")
-                return True
-            
+        except libvirt.libvirtError as e:
+            logger.error(f"虚拟机 {name} 不存在: {e}")
+            raise Exception(f"虚拟机 {name} 不存在")
+
+        # 如果已经在运行，直接返回
+        if domain.isActive():
+            logger.warning(f"虚拟机 {name} 已经在运行")
+            return True
+
+        # 启动虚拟机
+        try:
             result = domain.create()
-            if result == 0:
-                logger.info(f"虚拟机 {name} 启动成功")
-                return True
-            else:
-                logger.error(f"虚拟机 {name} 启动失败")
-                return False
-                
         except libvirt.libvirtError as e:
             logger.error(f"启动虚拟机失败: {e}")
-            return False
+            raise Exception(f"启动虚拟机失败: {e}")
+        # 启动结果检查
+        if result == 0:
+            logger.info(f"虚拟机 {name} 启动成功")
+            return True
+        else:
+            logger.error(f"虚拟机 {name} 启动失败, 返回码: {result}")
+            raise Exception(f"虚拟机 {name} 启动失败, 返回码: {result}")
     
     def stop_vm(self, name: str, force: bool = False) -> bool:
         """

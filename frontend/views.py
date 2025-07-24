@@ -13,6 +13,7 @@ from django.db.models import Q
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 import os
+from apps.vms.services import vm_service
 
 
 def index(request):
@@ -97,10 +98,8 @@ def course_update(request, course_id):
 @login_required
 def course_delete(request, course_id):
     course = get_object_or_404(Course, id=course_id)
-    if request.method == 'POST':
-        course.delete()
-        return redirect('frontend:course_list')
-    return render(request, 'frontend/course_confirm_delete.html', {'course': course})
+    course.delete()
+    return redirect('frontend:course_list')
 
 @login_required
 def course_list(request):
@@ -140,6 +139,8 @@ def vm_create(request):
             vm = form.save(commit=False)
             vm.owner = request.user
             vm.save()
+            # 异步创建虚拟机
+            vm_service.create_vm_async(str(vm.id))
             return redirect('frontend:vm_list')
     else:
         form = VMForm()
@@ -160,10 +161,8 @@ def vm_update(request, vm_id):
 @login_required
 def vm_delete(request, vm_id):
     vm = get_object_or_404(VirtualMachine, id=vm_id)
-    if request.method == 'POST':
-        vm.delete()
-        return redirect('frontend:vm_list')
-    return render(request, 'frontend/vm_confirm_delete.html', {'vm': vm})
+    vm.delete()
+    return redirect('frontend:vm_list')
    
 @login_required
 def vm_detail(request, vm_id):
@@ -246,10 +245,8 @@ def user_update(request, user_id):
 @login_required
 def user_delete(request, user_id):
     user = get_object_or_404(User, pk=user_id)
-    if request.method == 'POST':
-        user.delete()
-        return redirect('frontend:user_list')
-    return render(request, 'frontend/user_confirm_delete.html', {'user': user})
+    user.delete()
+    return redirect('frontend:user_list')
 
 @login_required
 def user_profile(request):
@@ -294,13 +291,11 @@ def template_detail(request, template_id):
 def template_delete(request, template_id):
     """删除虚拟机模板"""
     template = get_object_or_404(VirtualMachineTemplate, id=template_id)
-    if request.method == 'POST':
-        # 删除文件
-        try:
-            os.remove(template.file_path)
-        except Exception:
-            pass
-        template.delete()
-        return redirect('frontend:template_list')
-    return render(request, 'frontend/template_confirm_delete.html', {'template': template})
+    # 删除文件
+    try:
+        os.remove(template.file_path)
+    except Exception:
+        pass
+    template.delete()
+    return redirect('frontend:template_list')
 
