@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'apps.users',
     'apps.courses',
     'apps.vms',
+    # Frontend app
+    'frontend',
 ]
 
 MIDDLEWARE = [
@@ -64,7 +66,7 @@ ROOT_URLCONF = 'vmlab.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'frontend' / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -74,6 +76,11 @@ TEMPLATES = [
             ],
         },
     },
+]
+ 
+# Static files (CSS, JavaScript, Images)
+STATICFILES_DIRS = [
+    BASE_DIR / 'frontend' / 'static',
 ]
 
 WSGI_APPLICATION = 'vmlab.wsgi.application'

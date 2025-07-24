@@ -19,6 +19,8 @@ from django.urls import path, include
 from apps.core.health import health_check
 
 urlpatterns = [
+    # Frontend application routes
+    path('', include('frontend.urls')),
     path('admin/', admin.site.urls),
     path('health/', health_check, name='health_check'),
     path('api/', include([
