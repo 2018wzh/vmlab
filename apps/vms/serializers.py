@@ -15,7 +15,8 @@ class VirtualMachineSerializer(serializers.ModelSerializer):
     owner_username = serializers.CharField(source='owner.username', read_only=True)
     course_name = serializers.CharField(source='course.name', read_only=True)
     template_name = serializers.CharField(source='template.name', read_only=True)
-    
+    websockify_port = serializers.IntegerField(read_only=True)
+
     class Meta:
         model = VirtualMachine
         fields = [
@@ -23,9 +24,9 @@ class VirtualMachineSerializer(serializers.ModelSerializer):
             'course', 'course_name', 'template', 'template_name',
             'cpu_cores', 'memory_mb', 'disk_gb', 'status',
             'ip_address', 'mac_address', 'vnc_port', 'vnc_password',
-            'created_at', 'updated_at'
+            'created_at', 'updated_at', 'websockify_port'
         ]
-        read_only_fields = ['id', 'uuid', 'status', 'ip_address', 'mac_address', 
+        read_only_fields = ['id', 'uuid', 'owner', 'status', 'ip_address', 'mac_address', 
                            'vnc_port', 'vnc_password', 'created_at', 'updated_at']
 
 
@@ -135,13 +136,9 @@ class VirtualMachineOperationSerializer(serializers.Serializer):
     """
     虚拟机操作序列化器
     """
-    force = serializers.BooleanField(default=False, required=False)
-    
-    
+    force = serializers.BooleanField(default=False)
+
 class VNCAccessSerializer(serializers.Serializer):
-    """
-    VNC访问序列化器
-    """
-    vnc_url = serializers.CharField()
-    vnc_port = serializers.IntegerField()
-    vnc_password = serializers.CharField(allow_null=True)
+    """VNC访问信息序列化器"""
+    websockify_port = serializers.IntegerField()
+    vnc_password = serializers.CharField(allow_blank=True, allow_null=True)

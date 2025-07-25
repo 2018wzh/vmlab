@@ -71,6 +71,13 @@ class VirtualMachine(models.Model):
     def can_resume(self):
         """是否可以恢复"""
         return self.status == 'paused'
+
+    @property
+    def websockify_port(self):
+        """获取 anaconda VNC 的 websockify 端口"""
+        if self.vnc_port:
+            return self.vnc_port + 6000
+        return None
     
     def get_status_display_color(self):
         """获取状态显示颜色"""

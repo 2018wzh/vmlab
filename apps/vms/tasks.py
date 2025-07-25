@@ -50,7 +50,7 @@ def create_vm_task(self, vm_id: str):
         # 保存 VNC 密码
         if 'vnc_password' in vm_info:
             vm.vnc_password = vm_info['vnc_password']
-        vm.status = 'stopped'
+        vm.status = 'running'
         vm.save()
         
         logger.info(f"虚拟机 {vm.name} 创建成功")

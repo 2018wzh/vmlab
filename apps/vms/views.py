@@ -138,6 +138,9 @@ class VirtualMachineViewSet(viewsets.ModelViewSet):
         result = vm_service.start_vm(str(vm.id))
         
         if result['success']:
+            # 启动 websockify
+            vm.refresh_from_db() # 确保获取到最新的 vnc_port
+            vm_service.start_websockify(vm)
             return Response({
                 'message': '虚拟机启动成功'
             })
@@ -343,17 +346,26 @@ class VirtualMachineViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
+        # 确保 websockify 正在运行
+        websockify_port = vm_service.start_websockify(vm)
+        if not websockify_port:
+            return Response(
+                {'error': '无法启动 VNC 代理服务'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
         try:
             # 获取VNC访问信息
             vnc_data = {
-                'vnc_url': f"ws://localhost:{vm.vnc_port}",
-                'vnc_port': vm.vnc_port,
+                'websockify_port': websockify_port,
                 'vnc_password': vm.vnc_password
             }
             
-            serializer = VNCAccessSerializer(vnc_data)
+            serializer = VNCAccessSerializer(data=vnc_data)
+            serializer.is_valid(raise_exception=True)
             return Response(serializer.data)
-            
+        except VirtualMachine.DoesNotExist:
+            return Response({'error': '虚拟机未找到'}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             logger.error(f"获取VNC访问信息失败: {e}")
             return Response(

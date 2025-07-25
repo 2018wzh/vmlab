@@ -9,6 +9,7 @@
 <p>磁盘: {{ vm.disk_gb }} GB</p>
 <p>IP: {{ vm.ip_address }}</p>
 <p>VNC端口: {{ vm.vnc_port }}</p>
+<p>VNC密码：{{ vm.vnc_password }}</p>
 
 {% if vm.status == 'running' %}
 <div class="mt-4">
@@ -17,17 +18,13 @@
 </div>
 <script>
   (function() {
-    const novnc_endpoint = "{% static 'novnc/vnc_lite.html' %}";
+    const novnc_endpoint = "{% static 'novnc/vnc.html' %}";
     document.getElementById('open_vnc').addEventListener('click', function() {
       fetch('/api/vms/{{ vm.id }}/console_vnc/')
         .then(r => r.json())
         .then(data => {
-          if (data.vnc_url) {
-            const url = `${novnc_endpoint}?host=${encodeURIComponent(window.location.hostname)}&port=${encodeURIComponent(data.vnc_port)}&password=${encodeURIComponent(data.vnc_password)}`;
+            const url = `${novnc_endpoint}?host=${encodeURIComponent(window.location.hostname)}&port=${encodeURIComponent(data.websockify_port)}&password=${encodeURIComponent(data.vnc_password)}&autoconnect=1`;
             window.open(url, 'vnc_window', 'width=1024,height=768');
-          } else {
-            alert(data.error || '无法获取控制台访问信息');
-          }
         });
     });
   })();

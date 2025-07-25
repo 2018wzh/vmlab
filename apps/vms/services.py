@@ -5,12 +5,18 @@ import logging
 import uuid
 import threading
 import time
+import subprocess
+import shutil
 from typing import Dict, Optional
 from django.utils import timezone
 from apps.vms.models import VirtualMachine
 from apps.vms.libvirt_manager import libvirt_manager
 
 logger = logging.getLogger(__name__)
+
+# 用于存储 websockify 进程的全局字典
+# 键: websockify_port, 值: subprocess.Popen object
+websockify_processes: Dict[int, subprocess.Popen] = {}
 
 
 class VirtualMachineService:
@@ -58,7 +64,7 @@ class VirtualMachineService:
             vm.mac_address = vm_info['mac_address']
             vm.vnc_port = vm_info['vnc_port']
             vm.vnc_password = vm_info['vnc_password']
-            vm.status = 'stopped'
+            vm.status = 'running'
             vm.save()
             
             logger.info(f"虚拟机 {vm.name} 创建成功")
@@ -142,10 +148,12 @@ class VirtualMachineService:
         try:
             vm = VirtualMachine.objects.get(id=vm_id)
             
-            # 调用libvirt管理器停止虚拟机
-            success = libvirt_manager.stop_vm(vm.name, force=force)
-            
-            if success:
+            # 停止 websockify
+            if vm.websockify_port:
+                VirtualMachineService.stop_websockify(vm.websockify_port)
+
+            result = libvirt_manager.stop_vm(vm.name, force=force)
+            if result:
                 vm.status = 'stopped'
                 vm.save()
                 logger.info(f"虚拟机 {vm.name} 停止成功")
@@ -272,18 +280,19 @@ class VirtualMachineService:
         """
         try:
             vm = VirtualMachine.objects.get(id=vm_id)
-            vm_name = vm.name
-            
-            # 调用libvirt管理器删除虚拟机
-            success = libvirt_manager.delete_vm(vm_name, remove_disk=remove_disk)
-            
-            if success:
+
+            # 停止 websockify
+            if vm.websockify_port:
+                VirtualMachineService.stop_websockify(vm.websockify_port)
+
+            result = libvirt_manager.delete_vm(vm.name, remove_disk=remove_disk)
+            if result:
                 # 从数据库中删除记录
                 vm.delete()
-                logger.info(f"虚拟机 {vm_name} 删除成功")
+                logger.info(f"虚拟机 {vm.name} 删除成功")
                 return {'success': True, 'vm_id': vm_id}
             else:
-                logger.error(f"虚拟机 {vm_name} 删除失败")
+                logger.error(f"虚拟机 {vm.name} 删除失败")
                 return {'success': False, 'error': '删除失败'}
                 
         except VirtualMachine.DoesNotExist:
@@ -328,6 +337,67 @@ class VirtualMachineService:
         except Exception as e:
             logger.error(f"同步虚拟机状态失败: {e}")
             return {'success': False, 'error': str(e)}
+    
+    @staticmethod
+    def start_websockify(vm: 'VirtualMachine') -> Optional[int]:
+        """为虚拟机启动一个websockify进程"""
+        if not vm.vnc_port:
+            logger.warning(f"虚拟机 {vm.name} 没有VNC端口，无法启动websockify。")
+            return None
+
+        websockify_port = vm.websockify_port
+        if websockify_port is None:
+            logger.error(f"虚拟机 {vm.name} 的 websockify_port 为 None。")
+            return None
+            
+        vnc_port = vm.vnc_port
+
+        # 检查进程是否已在运行
+        if websockify_port in websockify_processes:
+            process = websockify_processes[websockify_port]
+            if process.poll() is None:  # 进程仍在运行
+                logger.info(f"Websockify for port {websockify_port} is already running.")
+                return websockify_port
+            else:
+                logger.info(f"Removing stale websockify process for port {websockify_port}.")
+                del websockify_processes[websockify_port]
+        
+        try:
+            # 查找 websockify 的可执行文件路径
+            websockify_path = shutil.which('websockify')
+            if not websockify_path:
+                logger.error("`websockify` command not found. Please ensure it is installed and in the system's PATH.")
+                return None
+
+            # 启动新的websockify进程
+            command = [
+                websockify_path,
+                str(websockify_port),
+                f'localhost:{vnc_port}'
+            ]
+            process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            websockify_processes[websockify_port] = process
+            logger.info(f"Started websockify for VM {vm.name} on port {websockify_port} (VNC: {vnc_port}). PID: {process.pid}")
+            return websockify_port
+        except Exception as e:
+            logger.error(f"Failed to start websockify for port {websockify_port}: {e}")
+            return None
+
+    @staticmethod
+    def stop_websockify(websockify_port: int):
+        """停止指定的websockify进程"""
+        if websockify_port in websockify_processes:
+            process = websockify_processes.pop(websockify_port)
+            if process.poll() is None: # 进程仍在运行
+                process.terminate()
+                try:
+                    process.wait(timeout=5)
+                    logger.info(f"Terminated websockify process on port {websockify_port}. PID: {process.pid}")
+                except subprocess.TimeoutExpired:
+                    process.kill()
+                    logger.warning(f"Killed websockify process on port {websockify_port} as it did not terminate gracefully. PID: {process.pid}")
+            else:
+                logger.info(f"Websockify process on port {websockify_port} was already stopped.")
 
 
 # 全局服务实例
